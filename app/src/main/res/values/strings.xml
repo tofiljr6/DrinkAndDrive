@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Drink&amp;Drive</string>
+    <string name="Option1">Ustaw parametry</string>
+    <string name="Option2">Ile mogę wypić?</string>
+    <string name="Option3">Dodaj alkohol</string>
+    <string name="Option4">Historia</string>
+    <string name="Option5">Ustawienia</string>
 </resources>
