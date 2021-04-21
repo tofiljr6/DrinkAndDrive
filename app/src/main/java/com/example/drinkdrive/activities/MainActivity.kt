@@ -21,12 +21,18 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.item1 ->setParameters()
+            R.id.item3 ->addAlcohol()
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun setParameters() {
         val myIntent= Intent(this,ParametersActivity::class.java)
+        startActivity(myIntent)
+    }
+
+    private fun addAlcohol() {
+        val myIntent = Intent(this, AddAlcoholActivity::class.java)
         startActivity(myIntent)
     }
 }
