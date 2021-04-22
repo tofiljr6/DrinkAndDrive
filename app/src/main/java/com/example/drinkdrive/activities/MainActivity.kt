@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         when(item.itemId){
             R.id.item1 ->setParameters()
             R.id.item3 ->addAlcohol()
+            R.id.item4 ->showHistory()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -33,6 +34,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun addAlcohol() {
         val myIntent = Intent(this, AddAlcoholActivity::class.java)
+        startActivity(myIntent)
+    }
+
+    private fun showHistory() {
+        val myIntent = Intent(this, ShowHistoryActivity::class.java)
         startActivity(myIntent)
     }
 }
