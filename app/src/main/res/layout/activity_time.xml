@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView_activityTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chcę jechać:"
+
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="30dp"
+
+        android:textSize="30sp"
+
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        />
+
+    <CheckBox
+        android:id="@+id/today_activityTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_activityTime"
+        android:textSize="25sp"
+        android:layout_centerHorizontal="true"
+
+
+        android:text="Dzisiaj" />
+
+    <CheckBox
+        android:id="@+id/tomorrow_activityTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@id/today_activityTime"
+        android:textSize="25sp"
+        android:layout_centerHorizontal="true"
+        android:text="Jutro" />
+
+    <Button
+        android:id="@+id/selectHour_activityTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tomorrow_activityTime"
+        android:textSize="20sp"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"
+        android:text="Wybierz godzinę" />
+
+    <TextView
+        android:id="@+id/selectedHour_activityDrive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@id/selectHour_activityTime"
+        android:textSize="20sp"
+        android:layout_marginTop= "30dp"
+        android:layout_centerHorizontal="true"
+        android:text="Wybrana godzina" />
+
+</RelativeLayout>
