@@ -21,9 +21,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.item1 ->setParameters()
-            R.id.item2 ->setTime()
             R.id.item3 ->addAlcohol()
-            R.id.item5 -> openSettings()
+            R.id.item4 ->showHistory()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -33,18 +32,13 @@ class MainActivity : AppCompatActivity() {
         startActivity(myIntent)
     }
 
-    private fun setTime() {
-        val myIntent= Intent(this,TimeActivity::class.java)
-        startActivity(myIntent)
-    }
-
     private fun addAlcohol() {
         val myIntent = Intent(this, AddAlcoholActivity::class.java)
         startActivity(myIntent)
     }
 
-    private fun openSettings() {
-        val myIntent= Intent(this,SettingsActivity::class.java)
+    private fun showHistory() {
+        val myIntent = Intent(this, ShowHistoryActivity::class.java)
         startActivity(myIntent)
     }
 }
