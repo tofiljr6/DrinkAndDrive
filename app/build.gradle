@@ -4,13 +4,16 @@ plugins {
 }
 
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.to_do"
+        applicationId "com.example.drinkanddrive"
         minSdkVersion 29
         targetSdkVersion 30
         versionCode 1

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.example.drinkdrive.R
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         var names=resources.getStringArray(R.array.alcohols)
         var images=resources.getStringArray(R.array.images)
         for(i in 0 until names.size){
-            val alcohol=Alcohol(i+1,names[i],images[i],10F)
+            val alcohol=Alcohol(i+1,names[i],images[i],500,10F)
             items.add(alcohol)
         }
         adapter= ViewPagerAdapter(items)

@@ -1,14 +1,17 @@
 package com.example.mygallery.Adapter.com.example.drinkdrive.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.drinkdrive.R
+import com.example.drinkdrive.activities.SetAlcoholActivity
 
 
 class ViewPagerAdapter(private val data:List<Alcohol>):RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
@@ -31,7 +34,17 @@ class ViewPagerAdapter(private val data:List<Alcohol>):RecyclerView.Adapter<View
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-       var item=data[position]
+        var item=data[position]
+        holder.itemView.setOnClickListener{
+            //SZYBKI SZOT
+            true
+        }
+        holder.itemView.setOnLongClickListener {
+            val myIntent=Intent(holder.itemView.context,SetAlcoholActivity::class.java)
+            myIntent.putExtra("alcohol",item)
+            holder.itemView.context.startActivity(myIntent)
+            true
+        }
        Glide.with(holder.itemView)
            .load(item.photoURL)
            .into(holder.photo)
