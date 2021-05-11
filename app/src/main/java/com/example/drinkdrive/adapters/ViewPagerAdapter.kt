@@ -1,4 +1,4 @@
-package com.example.mygallery.Adapter
+package com.example.mygallery.Adapter.com.example.drinkdrive.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +27,9 @@ class ViewPagerAdapter(private val data:List<Alcohol>):RecyclerView.Adapter<View
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view=LayoutInflater.from(parent.context).inflate((R.layout.alcohol_item),parent,false)
-        return ViewHolder(view)
+        return ViewHolder(
+            view
+        )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
