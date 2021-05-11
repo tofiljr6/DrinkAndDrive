@@ -5,4 +5,28 @@
     <string name="Option3">Dodaj alkohol</string>
     <string name="Option4">Historia</string>
     <string name="Option5">Ustawienia</string>
+    <string-array name="alcohols">
+        <item>PIWO</item>
+        <item>WINO</item>
+        <item>WÓDKA</item>
+        <item>GIN</item>
+        <item>ABSYNT</item>
+        <item>WHISKY</item>
+        <item>LIKIER</item>
+        <item>WÓDKA SMAKOWA</item>
+        <item>RUM</item>
+        <item>TEQUILA</item>
+    </string-array>
+    <string-array name="images">
+        <item>https://www.aledobre.pl/zdjecia/prod15301_max.jpg</item>
+        <item>https://rafa-wino.pl/1337-thickbox_default/kieliszek-do-czerwonego-wina-duet-komplet-2-szt.jpg</item>
+        <item>https://res.cloudinary.com/dj484tw6k/image/upload/v1513168636/be/992.jpg</item>
+        <item>https://alkohol-online.pl/1752-large_default/gin-lubuski-700ml.jpg</item>
+        <item>https://www.sztukawina.pl/image/cache/data/products/Absinth_Absynt_C_520130f41e370-228x350.jpg</item>
+        <item>https://alkohol-online.pl/2896-large_default/grants-700ml.jpg</item>
+        <item>https://darwina.pl/33187-large_default/jagermeister-350ml.jpg</item>
+        <item>https://image.ceneostatic.pl/data/products/33117944/i-soplica-malinowa-wodka-smakowa-500ml.jpg</item>
+        <item>https://darwina.pl/36552-large_default/rum-stock.jpg</item>
+        <item>https://domalkoholi.pl/userdata/public/gfx/856/tekila-silver-1.jpg</item>
+    </string-array>
 </resources>

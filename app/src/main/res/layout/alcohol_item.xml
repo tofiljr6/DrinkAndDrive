@@ -9,24 +9,12 @@
     <ImageView
         android:id="@+id/alcoholImage"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alcoholName"
-        app:layout_constraintVertical_bias="0.32999998"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
-    <TextView
-        android:id="@+id/alcoholName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nazwa"
+        android:layout_height="400dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04000002" />
+        app:layout_constraintVertical_bias="0.16000003" />
 
     <ProgressBar
         android:id="@+id/alcoholPercent"

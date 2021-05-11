@@ -5,12 +5,35 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.viewpager2.widget.ViewPager2
 import com.example.drinkdrive.R
+import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
+import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.ViewPagerAdapter
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
+
+    private var items= arrayListOf<Alcohol>()
+    private lateinit var adapter:ViewPagerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        var names=resources.getStringArray(R.array.alcohols)
+        var images=resources.getStringArray(R.array.images)
+        for(i in 0 until names.size){
+            val alcohol=Alcohol(i+1,names[i],images[i],10F)
+            items.add(alcohol)
+        }
+        adapter= ViewPagerAdapter(items)
+        val viewPager=findViewById<ViewPager2>(R.id.viewPager)
+        val tabLayout=findViewById<TabLayout>(R.id.tab)
+        viewPager.adapter=adapter
+        TabLayoutMediator(tabLayout,viewPager){tab,position->
+            tab.text=items[position].name
+        }.attach()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
