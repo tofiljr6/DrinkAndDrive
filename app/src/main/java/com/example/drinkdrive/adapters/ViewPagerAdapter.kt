@@ -9,9 +9,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.example.drinkdrive.R
 import com.example.drinkdrive.activities.SetAlcoholActivity
+import com.example.drinkdrive.database.AppDatabase
 
 
 class ViewPagerAdapter(private val data:List<Alcohol>):RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {

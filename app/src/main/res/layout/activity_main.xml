@@ -25,6 +25,27 @@
                 android:id="@+id/viewPager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/car2" />
+
+                <TextView
+                    android:id="@+id/promilleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="48sp"
+                    android:text="0.0 " />
+            </FrameLayout>
+
         </LinearLayout>
     </ScrollView>
 
