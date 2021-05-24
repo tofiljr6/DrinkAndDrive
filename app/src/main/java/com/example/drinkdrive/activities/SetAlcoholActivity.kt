@@ -54,14 +54,8 @@ class SetAlcoholActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.confirm).setOnClickListener{
             GlobalScope.launch {
-                var id = database.alcoholDrunkDAO().getLastID() + 1
-                var a = AlcoholDrunk(id,
-                        textView.text as String,
-                        spinnerPercent.selectedItem.toString().toFloat(),
-                    100F,
-                        //spinnerCapacity.selectedItem.toString().toFloat(),
-                        "18-05-2021")
-                database.alcoholDrunkDAO().insertAll(a)
+                database.alcoholDrunkDAO().insert(item.name,item.percent,item.capacity.toFloat(),"9dua09ds")
+                Log.v("heh","dao")
             }
             finish()
             true

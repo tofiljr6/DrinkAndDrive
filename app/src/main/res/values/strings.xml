@@ -29,4 +29,10 @@
         <item>https://darwina.pl/36552-large_default/rum-stock.jpg</item>
         <item>https://domalkoholi.pl/userdata/public/gfx/856/tekila-silver-1.jpg</item>
     </string-array>
+    <string-array name="sortStyle">
+        <item>Data</item>
+        <item>Alkohol</item>
+        <item>Ilość</item>
+        <item>Procenty</item>
+    </string-array>
 </resources>
