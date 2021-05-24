@@ -14,6 +14,8 @@ import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.lang.Math.floor
+import kotlin.math.floor
 
 class SetAlcoholActivity : AppCompatActivity() {
     private lateinit var database : AppDatabase
@@ -35,25 +37,20 @@ class SetAlcoholActivity : AppCompatActivity() {
         val item=intent.getParcelableExtra<Alcohol>("alcohol")
         val textView=findViewById<TextView>(R.id.alcoholName)
         val imageView=findViewById<ImageView>(R.id.alcoholImage)
-
-        val mapOfCapacity= mapOf(20 to 0,30 to 1,40 to 2,80 to 3,100 to 4,200 to 5,300 to 6,500 to 7,500 to 8,700 to 9,1000 to 10)
-        val capacity=mapOfCapacity.keys.toTypedArray()
         val percent= arrayListOf<Int>()
         for(i in 0 .. 100){
             percent.add(i)
         }
-        val spinnerCapacity=findViewById<Spinner>(R.id.spinnerCapacity)
+        val capacity=findViewById<EditText>(R.id.editTextNumber)
         val spinnerPercent=findViewById<Spinner>(R.id.spinnerPercent)
-        val adapterCapacity=ArrayAdapter<Int>(this,R.layout.support_simple_spinner_dropdown_item,capacity)
         val adapterPercent=ArrayAdapter<Int>(this,R.layout.support_simple_spinner_dropdown_item,percent)
-        spinnerCapacity.adapter=adapterCapacity
         spinnerPercent.adapter=adapterPercent
         textView.text=item!!.name
         Glide.with(this)
             .load(item.photoURL)
             .into(imageView)
-        spinnerCapacity.setSelection(mapOfCapacity[item.capacity]!! -1)
-        spinnerPercent.setSelection(item.percent.toInt()-1)
+        capacity.hint=item.capacity.toString()
+        spinnerPercent.setSelection((item.percent.toInt()))
 
         findViewById<Button>(R.id.confirm).setOnClickListener{
             GlobalScope.launch {
@@ -61,7 +58,8 @@ class SetAlcoholActivity : AppCompatActivity() {
                 var a = AlcoholDrunk(id,
                         textView.text as String,
                         spinnerPercent.selectedItem.toString().toFloat(),
-                        spinnerCapacity.selectedItem.toString().toFloat(),
+                    100F,
+                        //spinnerCapacity.selectedItem.toString().toFloat(),
                         "18-05-2021")
                 database.alcoholDrunkDAO().insertAll(a)
             }

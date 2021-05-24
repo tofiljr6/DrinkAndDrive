@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     tools:context=".activities.MainActivity">
 
     <ScrollView
@@ -14,6 +14,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_icon"
+                android:onClick="addAlcohol" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab"
@@ -34,16 +41,16 @@
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/car2" />
+                    android:src="@drawable/car2"/>
 
                 <TextView
                     android:id="@+id/promilleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:text="0.0 "
                     android:textColor="@color/white"
-                    android:textSize="48sp"
-                    android:text="0.0 " />
+                    android:textSize="48sp" />
             </FrameLayout>
 
         </LinearLayout>
