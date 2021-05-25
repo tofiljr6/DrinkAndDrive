@@ -15,12 +15,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/button3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_icon"
-                android:onClick="addAlcohol" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab"
@@ -32,6 +26,26 @@
                 android:id="@+id/viewPager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10px">
+
+                <Button
+                    android:id="@+id/button3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/button_icon"
+                    android:gravity="right"
+                    android:onClick="addAlcohol" />
+
+            </RelativeLayout>
+
+
+
+
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -51,6 +65,27 @@
                     android:text="0.0 "
                     android:textColor="@color/white"
                     android:textSize="48sp" />
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/glass"/>
+
+            <TextView
+                android:id="@+id/promilleTextView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="0.0 "
+                android:textColor="@color/black"
+                android:textSize="48sp" />
             </FrameLayout>
 
         </LinearLayout>

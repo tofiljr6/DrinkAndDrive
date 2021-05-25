@@ -1,21 +1,20 @@
 package com.example.drinkdrive.activities
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
-import androidx.core.view.get
 import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.example.drinkdrive.R
-import com.example.drinkdrive.database.AlcoholDrunk
 import com.example.drinkdrive.database.AppDatabase
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.Exception
-import java.lang.Math.floor
-import kotlin.math.floor
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class SetAlcoholActivity : AppCompatActivity() {
     private lateinit var database : AppDatabase
@@ -41,7 +40,7 @@ class SetAlcoholActivity : AppCompatActivity() {
         for(i in 0 .. 100){
             percent.add(i)
         }
-        val capacity=findViewById<EditText>(R.id.editTextNumber)
+        val capacity=findViewById<EditText>(R.id.alcoholCapacity)
         val spinnerPercent=findViewById<Spinner>(R.id.spinnerPercent)
         val adapterPercent=ArrayAdapter<Int>(this,R.layout.support_simple_spinner_dropdown_item,percent)
         spinnerPercent.adapter=adapterPercent
@@ -49,14 +48,27 @@ class SetAlcoholActivity : AppCompatActivity() {
         Glide.with(this)
             .load(item.photoURL)
             .into(imageView)
-        capacity.hint=item.capacity.toString()
+        capacity.setText(item.capacity.toString())
         spinnerPercent.setSelection((item.percent.toInt()))
-
         findViewById<Button>(R.id.confirm).setOnClickListener{
+            intent.putExtra("id",item.id)
+            intent.putExtra("capacity",capacity.text.toString().toFloat())
+            intent.putExtra("percent",spinnerPercent.selectedItem.toString().toFloat())
+            setResult(Activity.RESULT_OK,intent)
+            finish()
+        }
+        findViewById<Button>(R.id.save).setOnClickListener{
+            val id=item.id
+            val capacityText=capacity.text.toString().toFloat()
+            val percent=spinnerPercent.selectedItem.toString().toFloat()
             GlobalScope.launch {
-                database.alcoholDrunkDAO().insert(item.name,item.percent,item.capacity.toFloat(),"9dua09ds")
-                Log.v("heh","dao")
+                var currentDateTime = LocalDateTime.now()
+                database.alcoholDrunkDAO().insert(item.name,capacityText,percent,currentDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
             }
+            intent.putExtra("id",item.id)
+            intent.putExtra("capacity",capacityText)
+            intent.putExtra("percent",percent)
+            setResult(Activity.RESULT_OK,intent)
             finish()
             true
         }

@@ -13,10 +13,15 @@ import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.example.drinkdrive.R
 import com.example.drinkdrive.activities.SetAlcoholActivity
+import com.example.drinkdrive.adapters.ViewPagerClick
 import com.example.drinkdrive.database.AppDatabase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
-class ViewPagerAdapter(private val data:List<Alcohol>):RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
+class ViewPagerAdapter(private val data:List<Alcohol>,private val database: AppDatabase,private val click:ViewPagerClick):RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
     class ViewHolder(view: View):RecyclerView.ViewHolder(view){
         val photo:ImageView
         val percent:ProgressBar
@@ -38,13 +43,15 @@ class ViewPagerAdapter(private val data:List<Alcohol>):RecyclerView.Adapter<View
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var item=data[position]
         holder.itemView.setOnClickListener{
-            //SZYBKI SZOT
+            GlobalScope.launch {
+                var currentDateTime = LocalDateTime.now()
+                database.alcoholDrunkDAO().insert(item.name,item.percent,item.capacity.toFloat(),currentDateTime.format(
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+            }
             true
         }
         holder.itemView.setOnLongClickListener {
-            val myIntent=Intent(holder.itemView.context,SetAlcoholActivity::class.java)
-            myIntent.putExtra("alcohol",item)
-            holder.itemView.context.startActivity(myIntent)
+            click.onLongClick(position)
             true
         }
        Glide.with(holder.itemView)

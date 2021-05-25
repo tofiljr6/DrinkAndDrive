@@ -19,12 +19,10 @@ class HistoryRecyclerAdapter(private val data:List<AlcoholDrunk>):RecyclerView.A
     class ViewHolder(view: View): RecyclerView.ViewHolder(view){
         val name: TextView
         val capacity: TextView
-        val time: TextView
         val date:TextView
         init{
             name=view.findViewById(R.id.alcoName);
             capacity=view.findViewById(R.id.alcoCapacity)
-            time=view.findViewById(R.id.alcoTime)
             date=view.findViewById(R.id.alcoDate)
         }
     }
@@ -45,7 +43,6 @@ class HistoryRecyclerAdapter(private val data:List<AlcoholDrunk>):RecyclerView.A
         val item=data[position]
         holder.name.text=item.alcohol_name
         holder.capacity.text=item.capacity.toString()
-        holder.time.text=item.data
         holder.date.text=item.data
     }
 
