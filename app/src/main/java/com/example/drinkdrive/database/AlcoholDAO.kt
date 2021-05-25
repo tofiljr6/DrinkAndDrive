@@ -29,4 +29,7 @@ interface AlcoholDAO{
 
     @Query("update alcohols set percent=:percent, capacity=:capacity where id=:id")
     fun set(id:Int,capacity: Float,percent: Float)
+
+    @Query("select id from alcohols order by id desc limit 1")
+    fun getLastID() : Int
 }

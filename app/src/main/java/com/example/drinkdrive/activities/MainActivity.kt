@@ -110,10 +110,9 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 val uri = data.getStringExtra("uri")
                 val capacity = data.getFloatExtra("capacity", 0F)
                 val percent = data.getFloatExtra("percent", 0F)
-                GlobalScope.launch {
-                    database.alcoholDAO().insert(name!!, uri!!, capacity!!, percent!!)
-                }
-                items.add(Alcohol(items.size, name!!, uri!!, capacity, percent))
+                database.alcoholDAO().insert(name!!, uri!!, capacity!!, percent!!)
+                val id=database.alcoholDAO().getLastID()
+                items.add(Alcohol(id, name!!, uri!!, capacity, percent))
                 adapter.notifyItemInserted(items.size - 1)
             }
             if (requestCode == 124) {
