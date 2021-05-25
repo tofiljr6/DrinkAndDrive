@@ -3,14 +3,11 @@
     package="com.example.drinkdrive">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.camera.any" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-
-
-
 
     <application
         android:allowBackup="true"
@@ -19,7 +16,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DrinkDrive">
-        <activity android:name=".activities.PhotoActivity"></activity>
+        <service
+            android:name=".service.MyService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name=".service.MyIntentService"
+            android:exported="false" />
+
+        <activity android:name=".activities.PhotoActivity" />
         <activity android:name=".activities.SetAlcoholActivity" />
         <activity android:name=".activities.AddAlcoholActivity" />
         <activity android:name=".activities.ParametersActivity" />

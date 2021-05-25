@@ -22,5 +22,8 @@ interface AlcoholDrunkDAO {
     @Delete
     fun delete(alcoholDrunk: AlcoholDrunk)
 
+    @Query("delete from alcohol_drunk")
+    fun deleteAll()
+
 
 }
