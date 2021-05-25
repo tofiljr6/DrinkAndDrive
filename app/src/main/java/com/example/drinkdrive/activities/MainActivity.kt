@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     }
 
     private fun setParameters() {
-        val myIntent= Intent(this,GraphActivity::class.java)
+        val myIntent= Intent(this,ParametersActivity::class.java)
         startActivity(myIntent)
     }
     private fun setTime() {

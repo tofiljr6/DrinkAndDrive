@@ -1,5 +1,6 @@
 package com.example.drinkdrive.activities
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -27,6 +28,7 @@ import java.lang.Exception
 class ShowHistoryActivity : AppCompatActivity() {
 
     lateinit var database:AppDatabase
+    private var items= mutableListOf<AlcoholDrunk>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +44,7 @@ class ShowHistoryActivity : AppCompatActivity() {
             Log.d("db_D&D", e.message.toString())
         }
 
-        var items=database.alcoholDrunkDAO().getAll()
-
+        items=database.alcoholDrunkDAO().getAll()
         val adapter=HistoryRecyclerAdapter(items)
         val recycler=findViewById<RecyclerView>(R.id.recyclerView)
         recycler.layoutManager =
@@ -129,4 +130,10 @@ class ShowHistoryActivity : AppCompatActivity() {
         }
             true
         }
+
+    fun charts(view: View) {
+        val myIntent= Intent(this,GraphActivity::class.java)
+        myIntent.putExtra("data",ArrayList<AlcoholDrunk>(items))
+        startActivity(myIntent)
     }
+}
