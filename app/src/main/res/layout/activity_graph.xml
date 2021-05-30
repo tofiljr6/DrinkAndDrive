@@ -8,18 +8,26 @@
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/line_chart"
-        android:layout_width="414dp"
-        android:layout_height="484dp"
+        android:layout_width="420dp"
+        android:layout_height="500dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/testViewGraph" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerGraph" />
 
-    <TextView
-        android:id="@+id/testViewGraph"
-        android:layout_width="wrap_content"
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pie_chart"
+        android:layout_width="420dp"
+        android:layout_height="500dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerGraph" />
+
+    <Spinner
+        android:id="@+id/spinnerGraph"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="col1">#4C6085</color>
+    <color name="col2">#39A0ED</color>
+    <color name="col3">#36F1CD</color>
+    <color name="col4">#13C4A3</color>
+    <color name="col5">#32322C</color>
+    <color name="col6">#466365</color>
+    <color name="col7">#B49A67</color>
+    <color name="col8">#CEB3AB</color>
+    <color name="col9">#BAA5FF</color>
+    <color name="col10">#C4C6E7</color>
 </resources>

@@ -1,40 +1,45 @@
 package com.example.drinkdrive.activities
 
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.drinkdrive.R
 import com.example.drinkdrive.database.AlcoholDrunk
 import com.example.drinkdrive.database.AppDatabase
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
+import kotlinx.android.synthetic.main.activity_parameters.*
 
 
 class GraphActivity : AppCompatActivity() {
 
-    private lateinit var lineChart:LineChart
-    private val data= mutableListOf<Entry>()
+    private lateinit var lineChart : LineChart
+    private lateinit var pieChart : PieChart
+    private val dataline= mutableListOf<Entry>()
+    private val datapie= mutableListOf<PieEntry>()
     private val date =  mutableListOf<String>()
     private var wypite =  mutableListOf<Float>()
+    private var typeOfAlco = mutableListOf<String>()
+    private var typeOfAlcoPopulariti = mutableListOf<Float>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph)
 
-
         // take a data from intent
         val items = intent.getParcelableArrayListExtra<AlcoholDrunk>("data")
 
-        // only for tests
-        val test = findViewById<TextView>(R.id.testViewGraph)
-        test.text = items.toString()
-
-        // groupy by date and capacity
+        // group by date and capacity
         for (item in items!!) {
             if (item.data.substring(0, 11) !in date) {
                 date.add(item.data.substring(0, 11))
@@ -43,36 +48,94 @@ class GraphActivity : AppCompatActivity() {
                 val x = date.lastIndexOf(item.data.substring(0, 11))
                 wypite[x] += item.capacity
             }
+
+            if (item.alcohol_name !in typeOfAlco) {
+                typeOfAlco.add(item.alcohol_name)
+                typeOfAlcoPopulariti.add(1f)
+            } else {
+                val x = typeOfAlco.lastIndexOf(item.alcohol_name)
+                typeOfAlcoPopulariti[x] += 1f
+            }
         }
 
-        // only for test
-        test.text = date.toString() + wypite.toString()
-
-        // find the charts and adds values to them
+        // find the charts
+        pieChart = findViewById(R.id.pie_chart)
         lineChart = findViewById(R.id.line_chart)
-        wypite.reverse()
+
+        // add values to data (pie and line)
         var i = 0
+        for (t in typeOfAlco) {
+            datapie.add(PieEntry(typeOfAlcoPopulariti[i], typeOfAlco[i]))
+            i++
+        }
+        i = 0
         for (w in wypite) {
-            data.add(Entry(i.toFloat(), wypite[i]))
+            dataline.add(Entry(i.toFloat(), wypite[i]))
             i++
         }
 
-        // axis formatter
-        val formatter: ValueFormatter =
-            object : ValueFormatter() {
-                override fun getAxisLabel(value: Float, axis: AxisBase): String {
-                    return date.get(date.size - 1 - value.toInt())
+        // spinner
+        val spinner = findViewById<Spinner>(R.id.spinnerGraph)
+        val arrayAdpter = ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1,
+                resources.getStringArray(R.array.graphType))
+        spinner.adapter = arrayAdpter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+            ) {
+                when (position) {
+                    0 -> lineChartDraw()
+                    1 -> pieChartDraw()
                 }
             }
+        }
+    }
+
+    fun pieChartDraw() {
+        // make visible right chart
+        pieChart.visibility = View.VISIBLE
+        lineChart.visibility = View.INVISIBLE
+
+        val pieDataSet = PieDataSet(datapie, "pie chart")
+        pieDataSet.setAutomaticallyDisableSliceSpacing(true)
+        pieDataSet.setColors(intArrayOf(R.color.col1, R.color.col2, R.color.col3,
+                R.color.col4, R.color.col5, R.color.col6,
+                R.color.col7, R.color.col8, R.color.col9, R.color.col10), this)
+        val pieData = PieData(pieDataSet)
+        pieChart.data = pieData
+        pieChart.invalidate()
+    }
+
+    fun lineChartDraw() {
+        // make visible right chart
+        pieChart.visibility = View.INVISIBLE
+        lineChart.visibility = View.VISIBLE
+        wypite.reverse()
+
+        // axis formatter
+        val formatter: ValueFormatter =
+                object : ValueFormatter() {
+                    override fun getAxisLabel(value: Float, axis: AxisBase): String {
+                        return date.get(date.size - 1 - value.toInt())
+                    }
+                }
         val xAxis = lineChart.xAxis
         xAxis.setGranularity(1f)
         xAxis.valueFormatter = formatter
         xAxis.position = XAxis.XAxisPosition.BOTTOM
 
         // draw chart
-        val lineDataSet = LineDataSet(data, "Dane")
+        val lineDataSet = LineDataSet(dataline, "Spożycie alkoholu w ostatnich dniach")
         val lineData = LineData(lineDataSet)
         lineChart.data = lineData
+        lineChart.animateX(100)
         lineChart.invalidate()
     }
 }
