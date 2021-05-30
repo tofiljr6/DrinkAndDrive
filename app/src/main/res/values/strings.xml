@@ -35,4 +35,8 @@
         <item>Ilość</item>
         <item>Procenty</item>
     </string-array>
+    <string-array name="graphType">
+        <item>Spożycie alkoholu w ostatnich dniach</item>
+        <item>Ulubiony trunek</item>
+    </string-array>
 </resources>
