@@ -73,6 +73,11 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        promile()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
         return super.onCreateOptionsMenu(menu)
@@ -152,10 +157,16 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
 
     fun promile () {
         // https://pl.wikipedia.org/wiki/Zawarto%C5%9B%C4%87_alkoholu_we_krwi
+        var k = 0f // współczyniki płci
 
-        //todo - body params
-        val k = 0.7f // współczyniki płci
-        val w = 80f // masa w kg
+        val shared = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val w = shared.getInt("weight", Context.MODE_PRIVATE).toFloat()
+        val sex = shared.getString("gender", "")
+        if (sex == "male") {
+            k = 0.7f
+        } else {
+            k = 0.6f
+        }
 
         val v = findViewById<TextView>(R.id.promilleTextView2)
         val last = database.alcoholDrunkDAO().getLastDrunk()
@@ -202,5 +213,4 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
 
         v.text = df.format(p).toString()
     }
-
 }
