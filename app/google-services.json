@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "591808699481",
+    "project_id": "drinkanddrive-a4543",
+    "storage_bucket": "drinkanddrive-a4543.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591808699481:android:293f05031816dd11646548",
+        "android_client_info": {
+          "package_name": "com.example.drinkanddrive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591808699481-3b1g51kesci8n9ceqcjgntgns59u30ok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0gyFiZCWQ5KXACmEs8jJKLC-PjUGphjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591808699481-3b1g51kesci8n9ceqcjgntgns59u30ok.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

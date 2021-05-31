@@ -1,6 +1,8 @@
 package com.example.drinkdrive.activities
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,8 +17,11 @@ import com.example.drinkdrive.adapters.ViewPagerClick
 import com.example.drinkdrive.database.AppDatabase
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.ViewPagerAdapter
+import com.firebase.ui.auth.AuthUI
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_add_alcohol.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -30,6 +35,8 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     private val capacity= arrayListOf<Float>(500F,200F,30F,50F,20F,100F,40F,40F,30F,30F)
     private val percent= arrayListOf<Float>(5F,12.5F,40F,35F,80F,40F,35F,36F,37.5F,40F)
     private lateinit var database:AppDatabase
+    private val RC_SIGN_IN=125
+    private lateinit var shared: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +50,19 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 .fallbackToDestructiveMigration().build()
         } catch (e: Exception) {
             Log.d("db_D&D", e.message.toString())
+        }
+        shared=getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val userId=shared.getString("user","noLogged")
+        if(userId=="noLogged"){
+            val providers = arrayListOf(
+                AuthUI.IdpConfig.EmailBuilder().build()
+            )
+            startActivityForResult(
+                AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(providers)
+                    .build(),
+                RC_SIGN_IN)
         }
         var names=resources.getStringArray(R.array.alcohols)
         var images=resources.getStringArray(R.array.images)
@@ -75,8 +95,24 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             R.id.item2 ->setTime()
             R.id.item3 ->showHistory()
             R.id.item4 ->openSettings()
+            R.id.item5->logOut()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun logOut() {
+        val editor=shared.edit()
+        editor.putString("user","noLogged")
+        editor.commit()
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build()
+        )
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .build(),
+            RC_SIGN_IN)
     }
 
     private fun setParameters() {
@@ -128,6 +164,17 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                         break
                     }
                 }
+            }
+        }
+        if(requestCode==RC_SIGN_IN){
+            if(data!=null){
+                val user = Firebase.auth.currentUser
+                val editor=shared.edit()
+                editor.putString("user",user.toString())
+                editor.commit()
+            }
+            else{
+                finish()
             }
         }
     }
