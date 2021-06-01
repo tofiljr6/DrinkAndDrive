@@ -93,6 +93,12 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 database.alcoholDAO().insertAll(alcohol)
             }
         }
+        promile()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        promile()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
