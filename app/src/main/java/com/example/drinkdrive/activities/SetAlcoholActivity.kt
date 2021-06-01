@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
+import androidx.core.content.res.ResourcesCompat
 import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.example.drinkdrive.R
@@ -14,6 +15,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import www.sanju.motiontoast.MotionToast
 import java.lang.Exception
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -68,6 +70,11 @@ class SetAlcoholActivity : AppCompatActivity() {
                 val user = Firebase.auth.currentUser!!.uid
                 database.alcoholDrunkDAO().insert(item.name,capacityText,percent,currentDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),user.toString())
             }
+            MotionToast.createColorToast(this,"Dodano","Wypiles: "+item.name,
+                MotionToast.TOAST_SUCCESS,
+                MotionToast.GRAVITY_BOTTOM,
+                MotionToast.SHORT_DURATION,
+                ResourcesCompat.getFont(this,R.font.helvetica_regular))
             intent.putExtra("id",item.id)
             intent.putExtra("capacity",capacityText)
             intent.putExtra("percent",percent)
