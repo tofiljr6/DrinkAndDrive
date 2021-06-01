@@ -245,7 +245,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             }
 
             // kieliszek
-            val deltapicia = LocalTime.parse(LocalTime.now().toString()).minusHours(starttime.toSecondOfDay().toLong())
+            val deltapicia = LocalTime.parse(LocalTime.now().toString()).minusHours(starttime.hour.toLong())
             val mgofBurnAlco = deltapicia.hour * burnalco
             val mgofConcuptedAlco = doses * 10
 
