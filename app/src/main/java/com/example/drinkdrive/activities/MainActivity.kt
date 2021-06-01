@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 RC_SIGN_IN)
         }
         else{
+            title="User: ${Firebase.auth.currentUser!!.displayName}"
             items = database.alcoholDAO().getAll(userId!!)
             adapter= ViewPagerAdapter(items,database,this)
             val viewPager=findViewById<ViewPager2>(R.id.viewPager)
@@ -76,7 +77,6 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 tab.text=items[position].name
             }.attach()
         }
-        title="User: ${Firebase.auth.currentUser!!.displayName}"
         var names = resources.getStringArray(R.array.alcohols)
         var images = resources.getStringArray(R.array.images)
         val firstName = database.alcoholDAO().getFirstName()
@@ -172,6 +172,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         }
         if(requestCode==RC_SIGN_IN){
             if(data!=null){
+                title="User: ${Firebase.auth.currentUser!!.displayName}"
                 userId = Firebase.auth.currentUser!!.uid
                 val editor=shared.edit()
                 editor.putString("user",userId.toString())
