@@ -28,6 +28,7 @@ import java.lang.Double.valueOf
 import java.lang.Exception
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.time.LocalDate
 import java.time.LocalTime
 
 class MainActivity : AppCompatActivity(),ViewPagerClick {
@@ -158,59 +159,107 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     fun promile () {
         // https://pl.wikipedia.org/wiki/Zawarto%C5%9B%C4%87_alkoholu_we_krwi
         var k = 0f // współczyniki płci
+        var burnalco = 0
 
+        // get body params data
         val shared = getSharedPreferences("prefs", Context.MODE_PRIVATE)
         val w = shared.getInt("weight", Context.MODE_PRIVATE).toFloat()
         val sex = shared.getString("gender", "")
         if (sex == "male") {
             k = 0.7f
+            burnalco = 12
         } else {
             k = 0.6f
+            burnalco = 10
         }
 
+        val carTextView = findViewById<TextView>(R.id.promilleTextView)
         val v = findViewById<TextView>(R.id.promilleTextView2)
-        val last = database.alcoholDrunkDAO().getLastDrunk()
-        val firstToday = last[0].data.substring(11,13).toInt()
-        var doses = 0
-        var clearAlko = 0f
 
-        for (l in last) {
-            when(l.alcohol_name) {
-                "PIWO" -> {
-                    val dose = (l.capacity / 250).toInt()
-                    doses += dose
-                    clearAlko += (10 * dose)
-                }
-                "WÓDKA" -> {
-                    val dose = (l.capacity / 30).toInt()
-                    doses += dose
-                    clearAlko += (10 * dose)
-                }
-                "WINO" -> {
-                    val dose = (l.capacity / 100).toInt()
-                    doses += dose
-                    clearAlko += (10 * dose)
-                }
-                else -> {
-                    val dose = (l.capacity / 100).toInt()
-                    doses += dose
-                    clearAlko += (10 * dose)
+        val last = database.alcoholDrunkDAO().getLastDrunk()
+        if (last.size != 0) {
+
+
+            // czas od którego będziemy liczyć promile
+            var startdata = LocalDate.parse(last[0].data.substring(0, 10))
+            var starttime = LocalTime.parse(last[0].data.substring(11, 19))
+            var ldatacurrent = LocalDate.parse(last[0].data.substring(0, 10))
+            var ltimecurrent = LocalTime.parse(last[0].data.substring(11, 19))
+            val hourstoStay = LocalTime.parse("01:00:00")
+
+            var doses = 0
+
+            for (l in last) {
+                ldatacurrent = LocalDate.parse(l.data.substring(0, 10))
+                ltimecurrent = LocalTime.parse(l.data.substring(11, 19))
+                when (l.alcohol_name) {
+                    "PIWO" -> {
+                        if (starttime.plusHours(hourstoStay.hour.toLong())
+                                .isBefore(ltimecurrent) || startdata != ldatacurrent
+                        ) {
+                            starttime = ltimecurrent
+                            startdata = ldatacurrent
+                            doses = (l.capacity / 250).toInt()
+                        } else {
+                            val dose = (l.capacity / 250).toInt()
+                            doses += dose
+                        }
+                    }
+                    "WINO" -> {
+                        if (starttime.plusHours(hourstoStay.hour.toLong())
+                                .isBefore(ltimecurrent) || startdata != ldatacurrent
+                        ) {
+                            starttime = ltimecurrent
+                            startdata = ldatacurrent
+                            doses = (l.capacity / 100).toInt()
+                        } else {
+                            val dose = (l.capacity / 100).toInt()
+                            doses += dose
+                        }
+                    }
+                    "WÓDKA" -> {
+                        if (starttime.plusHours(hourstoStay.hour.toLong())
+                                .isBefore(ltimecurrent) || startdata != ldatacurrent
+                        ) {
+                            starttime = ltimecurrent
+                            startdata = ldatacurrent
+                            doses = (l.capacity / 30).toInt()
+                        } else {
+                            val dose = (l.capacity / 30).toInt()
+                            doses += dose
+                        }
+                    }
+                    else -> {
+                        if (starttime.plusHours(hourstoStay.hour.toLong())
+                                .isBefore(ltimecurrent) || startdata != ldatacurrent
+                        ) {
+                            starttime = ltimecurrent
+                            startdata = ldatacurrent
+                            doses = (l.capacity / 50).toInt()
+                        } else {
+                            val dose = (l.capacity / 50).toInt()
+                            doses += dose
+                        }
+                    }
                 }
             }
+
+            // kieliszek
+            val deltapicia = LocalTime.parse(LocalTime.now().toString()).minusHours(starttime.toSecondOfDay().toLong())
+            val mgofBurnAlco = deltapicia.hour * burnalco
+            val mgofConcuptedAlco = doses * 10
+
+            val p = (mgofConcuptedAlco - mgofBurnAlco) / (k * w)
+            val df = DecimalFormat("#.##")
+            df.roundingMode = RoundingMode.HALF_DOWN
+            v.text = df.format(p).toString()
+
+            // autko
+            var readytogo = LocalTime.parse("00:00:00")
+            readytogo = readytogo.plusHours(doses.toLong())
+            val final = starttime.plusHours(readytogo.hour.toLong())
+
+            carTextView.text = final.toString()
         }
-
-        val currentT = LocalTime.parse(LocalTime.now().toString()).toString().substring(0, 8) // hh:mm:ss
-        val currenthours = currentT.substring(0, 2).toInt()
-
-        // how many doses we digested
-        val hoursdiff =  currenthours - firstToday
-        clearAlko -= (hoursdiff * 12)
-
-        // formatting promile
-        val p = clearAlko/(k*w)
-        val df = DecimalFormat("#.##")
-        df.roundingMode = RoundingMode.HALF_DOWN
-
-        v.text = df.format(p).toString()
     }
 }
