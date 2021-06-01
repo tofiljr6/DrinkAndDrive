@@ -1,5 +1,9 @@
 package com.example.drinkdrive.activities
 
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -10,12 +14,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.drinkdrive.R
+import com.example.drinkdrive.adapters.NotificationAdapter
 import com.example.drinkdrive.adapters.ViewPagerClick
-import com.example.drinkdrive.database.AlcoholDrunk
 import com.example.drinkdrive.database.AppDatabase
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.ViewPagerAdapter
@@ -26,10 +29,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_add_alcohol.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import org.w3c.dom.Text
-import java.lang.Double.valueOf
 import java.lang.Exception
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -93,6 +92,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 database.alcoholDAO().insertAll(alcohol)
             }
         }
+        createNotificationChannel()
         promile()
     }
 
@@ -215,6 +215,27 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         true
     }
 
+    private fun createNotificationChannel() {
+        val name = "name"
+        val descriptionText = "des"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel("notification", name, importance).apply {
+            description = descriptionText
+        }
+        // Register the channel with the system
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun createNotification(time : Int) {
+        val intent = Intent(this, NotificationAdapter::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * time, pendingIntent)
+    }
+
     fun promile () {
         // https://pl.wikipedia.org/wiki/Zawarto%C5%9B%C4%87_alkoholu_we_krwi
         var k = 0f // współczyniki płci
@@ -316,9 +337,19 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             // autko
             var readytogo = LocalTime.parse("00:00:00")
             readytogo = readytogo.plusHours(doses.toLong())
-            val final = starttime.plusHours(readytogo.hour.toLong())
+            var final = starttime.plusHours(readytogo.hour.toLong())
 
             carTextView.text = final.toString()
+
+            // ustawianie powiadomienie
+            val finalHour = final.hour * 60 * 60
+            val finalMinute = final.minute * 60
+
+            val nowHour = LocalTime.now().hour * 60 * 60
+            val nowMinute = LocalTime.now().minute * 60
+
+            createNotification((finalMinute + finalHour + final.second) -
+                    (nowHour + nowMinute + LocalTime.now().second))
         }
     }
 }
