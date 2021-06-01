@@ -228,12 +228,16 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         notificationManager.createNotificationChannel(channel)
     }
 
-    private fun createNotification(time : Int) {
+    private fun createNotification(time : Int, active : String) {
         val intent = Intent(this, NotificationAdapter::class.java)
         val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * time, pendingIntent)
+        if (active == "true") {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * time, pendingIntent)
+        } else {
+            alarmManager.cancel(pendingIntent)
+        }
     }
 
     fun promile () {
@@ -337,7 +341,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             // autko
             var readytogo = LocalTime.parse("00:00:00")
             readytogo = readytogo.plusHours(doses.toLong())
-            var final = starttime.plusHours(readytogo.hour.toLong())
+            val final = starttime.plusHours(readytogo.hour.toLong())
 
             carTextView.text = final.toString()
 
@@ -348,8 +352,12 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             val nowHour = LocalTime.now().hour * 60 * 60
             val nowMinute = LocalTime.now().minute * 60
 
+
             createNotification((finalMinute + finalHour + final.second) -
-                    (nowHour + nowMinute + LocalTime.now().second))
+                    (nowHour + nowMinute + LocalTime.now().second),
+                shared.getString("notifications", "false")!!)
+
+
         }
     }
 }

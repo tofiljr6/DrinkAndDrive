@@ -1,5 +1,6 @@
 package com.example.drinkdrive.activities
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -19,7 +20,8 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
-        //findViewById<SwitchCompat>(R.id.notify).isChecked = shared.getString("notifications", null) == "true"
+        shared = getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        findViewById<SwitchCompat>(R.id.notify).isChecked = shared.getString("notifications", "false") == "true"
 
         try {
             database = Room.databaseBuilder(
@@ -38,7 +40,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     fun notifications(view: View) {
-        val editor=shared.edit()
+        val editor = shared.edit()
         editor.putString("notifications", (view as SwitchCompat).isChecked.toString())
         editor.commit()
     }
