@@ -96,10 +96,6 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         promile()
     }
 
-    override fun onResume() {
-        super.onResume()
-        promile()
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
