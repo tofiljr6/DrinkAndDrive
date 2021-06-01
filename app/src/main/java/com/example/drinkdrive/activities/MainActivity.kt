@@ -2,6 +2,7 @@ package com.example.drinkdrive.activities
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,9 +19,13 @@ import com.example.drinkdrive.database.AlcoholDrunk
 import com.example.drinkdrive.database.AppDatabase
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.ViewPagerAdapter
+import com.firebase.ui.auth.AuthUI
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_add_alcohol.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.Text
@@ -38,6 +43,9 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     private val capacity= arrayListOf<Float>(500F,200F,30F,50F,20F,100F,40F,40F,30F,30F)
     private val percent= arrayListOf<Float>(5F,12.5F,40F,35F,80F,40F,35F,36F,37.5F,40F)
     private lateinit var database:AppDatabase
+    private val RC_SIGN_IN=125
+    private lateinit var shared: SharedPreferences
+    var userId:String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,31 +60,39 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         } catch (e: Exception) {
             Log.d("db_D&D", e.message.toString())
         }
-        var names=resources.getStringArray(R.array.alcohols)
-        var images=resources.getStringArray(R.array.images)
-        val firstName=database.alcoholDAO().getFirstName()
-        if(firstName!="PIWO"){
-            for(i in 0 until names.size) {
-                val alcohol = Alcohol(i + 1, names[i], images[i], capacity[i], percent[i])
+        shared=getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        userId=shared.getString("user","noLogged")
+        if(userId=="noLogged"){
+            val providers = arrayListOf(
+                AuthUI.IdpConfig.EmailBuilder().build()
+            )
+            startActivityForResult(
+                AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(providers)
+                    .build(),
+                RC_SIGN_IN)
+        }
+        else{
+            title="User: ${Firebase.auth.currentUser!!.displayName}"
+            items = database.alcoholDAO().getAll(userId!!)
+            adapter= ViewPagerAdapter(items,database,this)
+            val viewPager=findViewById<ViewPager2>(R.id.viewPager)
+            val tabLayout=findViewById<TabLayout>(R.id.tab)
+            viewPager.adapter=adapter
+            TabLayoutMediator(tabLayout,viewPager){tab,position->
+                tab.text=items[position].name
+            }.attach()
+        }
+        var names = resources.getStringArray(R.array.alcohols)
+        var images = resources.getStringArray(R.array.images)
+        val firstName = database.alcoholDAO().getFirstName()
+        if (firstName != "PIWO") {
+            for (i in 0 until names.size) {
+                val alcohol = Alcohol(i + 1, names[i], images[i], capacity[i], percent[i], null)
                 database.alcoholDAO().insertAll(alcohol)
             }
         }
-        items = database.alcoholDAO().getAll()
-        adapter= ViewPagerAdapter(items,database,this)
-        val viewPager=findViewById<ViewPager2>(R.id.viewPager)
-        val tabLayout=findViewById<TabLayout>(R.id.tab)
-        viewPager.adapter=adapter
-        TabLayoutMediator(tabLayout,viewPager){tab,position->
-            tab.text=items[position].name
-        }.attach()
-
-        promile()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        promile()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -90,8 +106,24 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             R.id.item2 ->setTime()
             R.id.item3 ->showHistory()
             R.id.item4 ->openSettings()
+            R.id.item5->logOut()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun logOut() {
+        val editor=shared.edit()
+        editor.putString("user","noLogged")
+        editor.commit()
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build()
+        )
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .build(),
+            RC_SIGN_IN)
     }
 
     private fun setParameters() {
@@ -125,10 +157,10 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 val uri = data.getStringExtra("uri")
                 val capacity = data.getFloatExtra("capacity", 0F)
                 val percent = data.getFloatExtra("percent", 0F)
-                database.alcoholDAO().insert(name!!, uri!!, capacity!!, percent!!)
+                database.alcoholDAO().insert(name!!, uri!!, capacity!!, percent!!,userId!!)
                 val id=database.alcoholDAO().getLastID()
-                items.add(Alcohol(id, name!!, uri!!, capacity, percent))
-                adapter.notifyItemInserted(items.size - 1)
+                items.add(Alcohol(id, name!!, uri!!, capacity, percent,userId))
+                adapter.notifyItemInserted(items.size-1)
             }
             if (requestCode == 124) {
                 val id = data.getIntExtra("id", 0)
@@ -143,6 +175,26 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                         break
                     }
                 }
+            }
+        }
+        if(requestCode==RC_SIGN_IN){
+            if(data!=null){
+                title="User: ${Firebase.auth.currentUser!!.displayName}"
+                userId = Firebase.auth.currentUser!!.uid
+                val editor=shared.edit()
+                editor.putString("user",userId.toString())
+                editor.commit()
+                items = database.alcoholDAO().getAll(userId!!)
+                adapter= ViewPagerAdapter(items,database,this)
+                val viewPager=findViewById<ViewPager2>(R.id.viewPager)
+                val tabLayout=findViewById<TabLayout>(R.id.tab)
+                viewPager.adapter=adapter
+                TabLayoutMediator(tabLayout,viewPager){tab,position->
+                    tab.text=items[position].name
+                }.attach()
+            }
+            else{
+                finish()
             }
         }
     }

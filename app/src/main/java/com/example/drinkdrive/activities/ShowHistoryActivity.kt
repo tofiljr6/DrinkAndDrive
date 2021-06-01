@@ -1,6 +1,8 @@
 package com.example.drinkdrive.activities
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +20,8 @@ import com.example.drinkdrive.adapters.SwipeToDelete
 import com.example.drinkdrive.database.AlcoholDrunk
 import com.example.drinkdrive.database.AppDatabase
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -40,8 +44,8 @@ class ShowHistoryActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.d("db_D&D", e.message.toString())
         }
-
-        items=database.alcoholDrunkDAO().getAll()
+        val user = Firebase.auth.currentUser!!.uid
+        items=database.alcoholDrunkDAO().getAll(user.toString())
         val adapter=HistoryRecyclerAdapter(items)
         val recycler=findViewById<RecyclerView>(R.id.recyclerView)
         recycler.layoutManager =

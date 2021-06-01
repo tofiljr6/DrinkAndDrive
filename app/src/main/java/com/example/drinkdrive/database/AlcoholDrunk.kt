@@ -14,5 +14,6 @@ data class AlcoholDrunk (
     @ColumnInfo(name = "alcohol_name") var alcohol_name : String,
     @ColumnInfo(name = "percent_number") var percent_number : Float,
     @ColumnInfo(name = "capacity") var capacity : Float,
-    @ColumnInfo(name = "data_of_consumption") var data : String
+    @ColumnInfo(name = "data_of_consumption") var data : String,
+    @ColumnInfo(name="userId") var userId:String?
 ):Parcelable

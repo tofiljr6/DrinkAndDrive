@@ -123,7 +123,8 @@ class GraphActivity : AppCompatActivity() {
         val formatter: ValueFormatter =
                 object : ValueFormatter() {
                     override fun getAxisLabel(value: Float, axis: AxisBase): String {
-                        return date.get(date.size - 1 - value.toInt())
+                        return "nie dziala dla jednego dnia"
+                        //return date.get(date.size - 1 - value.toInt())
                     }
                 }
         val xAxis = lineChart.xAxis
