@@ -17,6 +17,8 @@ import com.example.drinkdrive.R
 import com.example.drinkdrive.activities.SetAlcoholActivity
 import com.example.drinkdrive.adapters.ViewPagerClick
 import com.example.drinkdrive.database.AppDatabase
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import www.sanju.motiontoast.MotionToast
@@ -48,8 +50,9 @@ class ViewPagerAdapter(private val data:List<Alcohol>,private val database: AppD
         holder.itemView.setOnClickListener{
             GlobalScope.launch {
                 var currentDateTime = LocalDateTime.now()
+                val user = Firebase.auth.currentUser!!.uid
                 database.alcoholDrunkDAO().insert(item.name,item.percent,item.capacity.toFloat(),currentDateTime.format(
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),user.toString())
             }
             MotionToast.createColorToast(holder.itemView.context as Activity,"Dodano","Wypiles: "+item.name,
                     MotionToast.TOAST_SUCCESS,

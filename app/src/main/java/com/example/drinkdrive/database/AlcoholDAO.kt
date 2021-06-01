@@ -9,8 +9,8 @@ import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 @Dao
 interface AlcoholDAO{
 
-    @Query("select * from alcohols")
-    fun getAll() : MutableList<Alcohol>
+    @Query("select * from alcohols where userId=:id or userId is null")
+    fun getAll(id:String) : MutableList<Alcohol>
 
     @Insert
     fun insertAll(vararg alcohol: Alcohol)
@@ -24,8 +24,8 @@ interface AlcoholDAO{
     @Delete
     fun delete(alcohol: Alcohol)
 
-    @Query("insert into alcohols(`name`,`photo`,`capacity`,`percent`) values(:name,:photo,:capacity,:percent)")
-    fun insert(name:String,photo:String,capacity:Float,percent:Float)
+    @Query("insert into alcohols(`name`,`photo`,`capacity`,`percent`,`userId`) values(:name,:photo,:capacity,:percent,:userId)")
+    fun insert(name:String,photo:String,capacity:Float,percent:Float,userId:String)
 
     @Query("update alcohols set percent=:percent, capacity=:capacity where id=:id")
     fun set(id:Int,capacity: Float,percent: Float)

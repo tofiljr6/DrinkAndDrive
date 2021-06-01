@@ -10,6 +10,8 @@ import com.bumptech.glide.Glide
 import com.example.drinkdrive.R
 import com.example.drinkdrive.database.AppDatabase
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -63,7 +65,8 @@ class SetAlcoholActivity : AppCompatActivity() {
             val percent=spinnerPercent.selectedItem.toString().toFloat()
             GlobalScope.launch {
                 var currentDateTime = LocalDateTime.now()
-                database.alcoholDrunkDAO().insert(item.name,capacityText,percent,currentDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                val user = Firebase.auth.currentUser!!.uid
+                database.alcoholDrunkDAO().insert(item.name,capacityText,percent,currentDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),user.toString())
             }
             intent.putExtra("id",item.id)
             intent.putExtra("capacity",capacityText)

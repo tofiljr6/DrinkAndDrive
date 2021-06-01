@@ -13,5 +13,6 @@ data class Alcohol(
     @ColumnInfo(name="name") var name:String,
     @ColumnInfo(name="photo") var photoURL:String,
     @ColumnInfo(name="capacity")var capacity:Float,
-    @ColumnInfo(name="percent") var percent:Float):Parcelable {
-}
+    @ColumnInfo(name="percent") var percent:Float,
+    @ColumnInfo(name="userId") var userId:String?
+):Parcelable

@@ -23,6 +23,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_add_alcohol.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.Double.valueOf
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     private lateinit var database:AppDatabase
     private val RC_SIGN_IN=125
     private lateinit var shared: SharedPreferences
+    var userId:String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +54,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             Log.d("db_D&D", e.message.toString())
         }
         shared=getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val userId=shared.getString("user","noLogged")
+        userId=shared.getString("user","noLogged")
         if(userId=="noLogged"){
             val providers = arrayListOf(
                 AuthUI.IdpConfig.EmailBuilder().build()
@@ -64,24 +66,26 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                     .build(),
                 RC_SIGN_IN)
         }
-        var names=resources.getStringArray(R.array.alcohols)
-        var images=resources.getStringArray(R.array.images)
-        val firstName=database.alcoholDAO().getFirstName()
-        if(firstName!="PIWO"){
-            for(i in 0 until names.size) {
-                val alcohol = Alcohol(i + 1, names[i], images[i], capacity[i], percent[i])
+        else{
+            items = database.alcoholDAO().getAll(userId!!)
+            adapter= ViewPagerAdapter(items,database,this)
+            val viewPager=findViewById<ViewPager2>(R.id.viewPager)
+            val tabLayout=findViewById<TabLayout>(R.id.tab)
+            viewPager.adapter=adapter
+            TabLayoutMediator(tabLayout,viewPager){tab,position->
+                tab.text=items[position].name
+            }.attach()
+        }
+        title="User: ${Firebase.auth.currentUser!!.displayName}"
+        var names = resources.getStringArray(R.array.alcohols)
+        var images = resources.getStringArray(R.array.images)
+        val firstName = database.alcoholDAO().getFirstName()
+        if (firstName != "PIWO") {
+            for (i in 0 until names.size) {
+                val alcohol = Alcohol(i + 1, names[i], images[i], capacity[i], percent[i], null)
                 database.alcoholDAO().insertAll(alcohol)
             }
         }
-        items = database.alcoholDAO().getAll()
-        adapter= ViewPagerAdapter(items,database,this)
-        val viewPager=findViewById<ViewPager2>(R.id.viewPager)
-        val tabLayout=findViewById<TabLayout>(R.id.tab)
-        viewPager.adapter=adapter
-        TabLayoutMediator(tabLayout,viewPager){tab,position->
-            tab.text=items[position].name
-        }.attach()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -146,10 +150,10 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 val uri = data.getStringExtra("uri")
                 val capacity = data.getFloatExtra("capacity", 0F)
                 val percent = data.getFloatExtra("percent", 0F)
-                database.alcoholDAO().insert(name!!, uri!!, capacity!!, percent!!)
+                database.alcoholDAO().insert(name!!, uri!!, capacity!!, percent!!,userId!!)
                 val id=database.alcoholDAO().getLastID()
-                items.add(Alcohol(id, name!!, uri!!, capacity, percent))
-                adapter.notifyItemInserted(items.size - 1)
+                items.add(Alcohol(id, name!!, uri!!, capacity, percent,userId))
+                adapter.notifyItemInserted(items.size-1)
             }
             if (requestCode == 124) {
                 val id = data.getIntExtra("id", 0)
@@ -168,10 +172,18 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         }
         if(requestCode==RC_SIGN_IN){
             if(data!=null){
-                val user = Firebase.auth.currentUser
+                userId = Firebase.auth.currentUser!!.uid
                 val editor=shared.edit()
-                editor.putString("user",user.toString())
+                editor.putString("user",userId.toString())
                 editor.commit()
+                items = database.alcoholDAO().getAll(userId!!)
+                adapter= ViewPagerAdapter(items,database,this)
+                val viewPager=findViewById<ViewPager2>(R.id.viewPager)
+                val tabLayout=findViewById<TabLayout>(R.id.tab)
+                viewPager.adapter=adapter
+                TabLayoutMediator(tabLayout,viewPager){tab,position->
+                    tab.text=items[position].name
+                }.attach()
             }
             else{
                 finish()

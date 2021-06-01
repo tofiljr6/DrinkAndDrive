@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 
-@Database(entities = [(AlcoholDrunk::class),(Alcohol::class)], version = 3)
+@Database(entities = [(AlcoholDrunk::class),(Alcohol::class)], version = 4)
 abstract class AppDatabase :RoomDatabase() {
     abstract fun alcoholDrunkDAO() : AlcoholDrunkDAO
     abstract fun alcoholDAO() : AlcoholDAO
