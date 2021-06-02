@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -15,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.drinkdrive.R
@@ -28,9 +28,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_add_alcohol.*
-import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.Exception
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -77,7 +74,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         else{
             title="User: ${Firebase.auth.currentUser!!.displayName}"
             items = database.alcoholDAO().getAll(userId!!)
-            adapter= ViewPagerAdapter(items,database,this)
+            adapter= ViewPagerAdapter(items,database,this, this)
             val viewPager=findViewById<ViewPager2>(R.id.viewPager)
             val tabLayout=findViewById<TabLayout>(R.id.tab)
             viewPager.adapter=adapter
@@ -194,7 +191,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 editor.putString("user",userId.toString())
                 editor.commit()
                 items = database.alcoholDAO().getAll(userId!!)
-                adapter= ViewPagerAdapter(items,database,this)
+                adapter= ViewPagerAdapter(items,database,this, this)
                 val viewPager=findViewById<ViewPager2>(R.id.viewPager)
                 val tabLayout=findViewById<TabLayout>(R.id.tab)
                 viewPager.adapter=adapter
