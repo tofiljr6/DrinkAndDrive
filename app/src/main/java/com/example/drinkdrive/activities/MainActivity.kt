@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     private val RC_SIGN_IN=125
     private lateinit var shared: SharedPreferences
     var userId:String?=null
+    private var carsIMG = arrayOf(R.drawable.cargreen, R.drawable.caryellow, R.drawable.car2, R.drawable.carblack)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -259,6 +261,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
 
         val carTextView = findViewById<TextView>(R.id.promilleTextView)
         val v = findViewById<TextView>(R.id.promilleTextView2)
+        val currentcarimg = findViewById<ImageView>(R.id.imageView)
 
         val last = database.alcoholDrunkDAO().getLastDrunk()
         if (last.size != 0) {
@@ -345,6 +348,22 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
 
             carTextView.text = final.toString()
 
+            // autko - kolor
+            when {
+                readytogo.hour <= 0 -> {
+                    currentcarimg.setImageResource(carsIMG[0])
+                }
+                readytogo.hour < 4 -> {
+                    currentcarimg.setImageResource(carsIMG[1])
+                }
+                readytogo.hour < 9 -> {
+                    currentcarimg.setImageResource(carsIMG[2])
+                }
+                else -> {
+                    currentcarimg.setImageResource(carsIMG[3])
+                }
+            }
+
             // ustawianie powiadomienie
             val finalHour = final.hour * 60 * 60
             val finalMinute = final.minute * 60
@@ -358,6 +377,10 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 shared.getString("notifications", "false")!!)
 
 
+        } else {
+            currentcarimg.setImageResource(carsIMG[0])
+            carTextView.text = "GO"
+            v.text = "0.0"
         }
     }
 }
