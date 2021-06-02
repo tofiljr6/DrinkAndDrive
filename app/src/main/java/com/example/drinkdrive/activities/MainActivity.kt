@@ -7,13 +7,14 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.drinkdrive.R
@@ -27,9 +28,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_add_alcohol.*
-import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.Exception
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -45,6 +43,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     private val RC_SIGN_IN=125
     private lateinit var shared: SharedPreferences
     var userId:String?=null
+    private var carsIMG = arrayOf(R.drawable.cargreen, R.drawable.caryellow, R.drawable.car2, R.drawable.carblack)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         else{
             title="User: ${Firebase.auth.currentUser!!.displayName}"
             items = database.alcoholDAO().getAll(userId!!)
-            adapter= ViewPagerAdapter(items,database,this)
+            adapter= ViewPagerAdapter(items,database,this, this)
             val viewPager=findViewById<ViewPager2>(R.id.viewPager)
             val tabLayout=findViewById<TabLayout>(R.id.tab)
             viewPager.adapter=adapter
@@ -192,7 +191,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 editor.putString("user",userId.toString())
                 editor.commit()
                 items = database.alcoholDAO().getAll(userId!!)
-                adapter= ViewPagerAdapter(items,database,this)
+                adapter= ViewPagerAdapter(items,database,this, this)
                 val viewPager=findViewById<ViewPager2>(R.id.viewPager)
                 val tabLayout=findViewById<TabLayout>(R.id.tab)
                 viewPager.adapter=adapter
@@ -246,9 +245,9 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         var burnalco = 0
 
         // get body params data
-        val shared = getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val w = shared.getInt("weight", Context.MODE_PRIVATE).toFloat()
-        val sex = shared.getString("gender", "")
+        val params = database.parameterDAO().getAll(userId!!)[0]
+        val sex = params.gender
+        val w = params.weight
         if (sex == "male") {
             k = 0.7f
             burnalco = 12
@@ -259,11 +258,10 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
 
         val carTextView = findViewById<TextView>(R.id.promilleTextView)
         val v = findViewById<TextView>(R.id.promilleTextView2)
+        val currentcarimg = findViewById<ImageView>(R.id.imageView)
 
         val last = database.alcoholDrunkDAO().getLastDrunk()
         if (last.size != 0) {
-
-
             // czas od którego będziemy liczyć promile
             var startdata = LocalDate.parse(last[0].data.substring(0, 10))
             var starttime = LocalTime.parse(last[0].data.substring(11, 19))
@@ -345,6 +343,22 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
 
             carTextView.text = final.toString()
 
+            // autko - kolor
+            when {
+                readytogo.hour <= 0 -> {
+                    currentcarimg.setImageResource(carsIMG[0])
+                }
+                readytogo.hour < 4 -> {
+                    currentcarimg.setImageResource(carsIMG[1])
+                }
+                readytogo.hour < 9 -> {
+                    currentcarimg.setImageResource(carsIMG[2])
+                }
+                else -> {
+                    currentcarimg.setImageResource(carsIMG[3])
+                }
+            }
+
             // ustawianie powiadomienie
             val finalHour = final.hour * 60 * 60
             val finalMinute = final.minute * 60
@@ -358,6 +372,10 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 shared.getString("notifications", "false")!!)
 
 
+        } else {
+            currentcarimg.setImageResource(carsIMG[0])
+            carTextView.text = "GO"
+            v.text = "0.0"
         }
     }
 }
