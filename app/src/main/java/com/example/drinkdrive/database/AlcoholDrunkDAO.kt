@@ -39,4 +39,7 @@ interface AlcoholDrunkDAO {
     @Query("select substr(data_of_consumption, 12) from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours')")
     fun getLastDrunkTime() : String
 
+    @Query("select data_of_consumption from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours')")
+    fun getFullLastDrunkTime() : String
+
 }

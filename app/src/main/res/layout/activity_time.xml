@@ -1,56 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <TextView
         android:id="@+id/textView_activityTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chcę jechać:"
-
-        android:layout_marginTop="200dp"
-        android:layout_marginBottom="30dp"
-
-        android:textSize="30sp"
-
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        />
 
-    <CheckBox
-        android:id="@+id/today_activityTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginTop="96dp"
+        android:text="Chcę jechać:"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/RadioGroup_activityTime"
+        android:layout_width="115dp"
+        android:layout_height="73dp"
         android:layout_below="@id/textView_activityTime"
-        android:textSize="25sp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="52dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_activityTime">
 
+        <RadioButton
+            android:id="@+id/today_activityTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-        android:text="Dzisiaj" />
+            android:text="Dzisiaj"
+            android:textSize="25sp" />
 
-    <CheckBox
-        android:id="@+id/tomorrow_activityTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        <RadioButton
+            android:id="@+id/tomorrow_activityTime"
+            android:layout_width="104dp"
+            android:layout_height="wrap_content"
 
-        android:layout_below="@id/today_activityTime"
-        android:textSize="25sp"
-        android:layout_centerHorizontal="true"
-        android:text="Jutro" />
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="88dp"
+            android:text="Jutro"
+            android:textSize="25sp" />
+    </RadioGroup>
 
     <Button
         android:id="@+id/selectHour_activityTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tomorrow_activityTime"
-        android:textSize="20sp"
-        android:layout_marginTop="100dp"
+        android:layout_below="@id/RadioGroup_activityTime"
         android:layout_centerHorizontal="true"
-        android:text="Wybierz godzinę" />
+        android:layout_marginTop="76dp"
+        android:text="Wybierz godzinę"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RadioGroup_activityTime" />
 
     <TextView
         android:id="@+id/selectedHour_activityDrive"
@@ -58,9 +72,36 @@
         android:layout_height="wrap_content"
 
         android:layout_below="@id/selectHour_activityTime"
-        android:textSize="20sp"
-        android:layout_marginTop= "30dp"
         android:layout_centerHorizontal="true"
-        android:text="Wybrana godzina" />
+        android:layout_marginTop="28dp"
+        android:text="Wybrana godzina"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectHour_activityTime" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/calculateButton_activityTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/RadioGroup_activityTime"
+        android:layout_centerHorizontal="true"
+        android:text="Oblicz!"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectedHour_activityDrive" />
+
+    <TextView
+        android:id="@+id/resultTextView_activityTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calculateButton_activityTime" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
