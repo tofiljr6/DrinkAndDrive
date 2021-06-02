@@ -248,9 +248,9 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         var burnalco = 0
 
         // get body params data
-        val shared = getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val w = shared.getInt("weight", Context.MODE_PRIVATE).toFloat()
-        val sex = shared.getString("gender", "")
+        val params = database.parameterDAO().getAll(userId!!)[0]
+        val sex = params.gender
+        val w = params.weight
         if (sex == "male") {
             k = 0.7f
             burnalco = 12
@@ -265,8 +265,6 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
 
         val last = database.alcoholDrunkDAO().getLastDrunk()
         if (last.size != 0) {
-
-
             // czas od którego będziemy liczyć promile
             var startdata = LocalDate.parse(last[0].data.substring(0, 10))
             var starttime = LocalTime.parse(last[0].data.substring(11, 19))
