@@ -68,7 +68,7 @@ class SetAlcoholActivity : AppCompatActivity() {
             GlobalScope.launch {
                 var currentDateTime = LocalDateTime.now()
                 val user = Firebase.auth.currentUser!!.uid
-                database.alcoholDrunkDAO().insert(item.name,capacityText,percent,currentDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),user.toString())
+                database.alcoholDrunkDAO().insert(item.name,percent,capacityText,currentDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),user.toString())
             }
             MotionToast.createColorToast(this,"Dodano","Wypiles: "+item.name,
                 MotionToast.TOAST_SUCCESS,

@@ -24,8 +24,8 @@ interface AlcoholDrunkDAO {
     @Delete
     fun delete(alcoholDrunk: AlcoholDrunk)
 
-    @Query("delete from alcohol_drunk")
-    fun deleteAll()
+    @Query("delete from alcohol_drunk where userId=:userId")
+    fun deleteAll(userId: String)
 
     @Query("select sum(capacity) from alcohol_drunk group by substr(data_of_consumption, 0, 11)")
     fun getSums() : MutableList<Float>

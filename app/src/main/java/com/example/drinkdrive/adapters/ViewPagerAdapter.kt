@@ -11,6 +11,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.drinkdrive.R
 import com.example.drinkdrive.activities.MainActivity
 import com.example.drinkdrive.adapters.ViewPagerClick
@@ -29,10 +31,12 @@ class ViewPagerAdapter(private val data:List<Alcohol>,private val database: AppD
         val photo:ImageView
         val percent:ProgressBar
         val percentNum:TextView
+        val capacity:TextView
         init{
             photo=view.findViewById(R.id.alcoholImage);
             percent=view.findViewById(R.id.alcoholPercent)
             percentNum=view.findViewById(R.id.alcoholPercentNum)
+            capacity=view.findViewById(R.id.capacity)
         }
     }
 
@@ -66,9 +70,13 @@ class ViewPagerAdapter(private val data:List<Alcohol>,private val database: AppD
         }
        Glide.with(holder.itemView)
            .load(item.photoURL)
+           .override(400,400)
+           .fitCenter()
+           .transform(RoundedCorners(100))
            .into(holder.photo)
         holder.percent.progress = item.percent.toInt()
-        holder.percentNum.text=item.percent.toString()
+        holder.percentNum.text=item.percent.toString()+" %"
+        holder.capacity.text=item.capacity.toInt().toString()+" ml"
     }
 
     override fun getItemCount(): Int {

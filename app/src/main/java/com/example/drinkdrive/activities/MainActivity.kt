@@ -1,9 +1,6 @@
 package com.example.drinkdrive.activities
 
-import android.app.AlarmManager
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -15,6 +12,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.drinkdrive.R
@@ -28,6 +26,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import www.sanju.motiontoast.MotionToast
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -113,8 +114,14 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             R.id.item3 ->showHistory()
             R.id.item4 ->openSettings()
             R.id.item5->logOut()
+            R.id.item6->coctail()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun coctail() {
+        val myIntent=Intent(this,CoctailActivity::class.java)
+        startActivity(myIntent)
     }
 
     private fun logOut() {
@@ -243,139 +250,106 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         // https://pl.wikipedia.org/wiki/Zawarto%C5%9B%C4%87_alkoholu_we_krwi
         var k = 0f // współczyniki płci
         var burnalco = 0
-
-        // get body params data
-        val params = database.parameterDAO().getAll(userId!!)[0]
-        val sex = params.gender
-        val w = params.weight
-        if (sex == "male") {
-            k = 0.7f
-            burnalco = 12
-        } else {
-            k = 0.6f
-            burnalco = 10
-        }
-
         val carTextView = findViewById<TextView>(R.id.promilleTextView)
         val v = findViewById<TextView>(R.id.promilleTextView2)
         val currentcarimg = findViewById<ImageView>(R.id.imageView)
 
-        val last = database.alcoholDrunkDAO().getLastDrunk()
-        if (last.size != 0) {
-            // czas od którego będziemy liczyć promile
-            var startdata = LocalDate.parse(last[0].data.substring(0, 10))
-            var starttime = LocalTime.parse(last[0].data.substring(11, 19))
-            var ldatacurrent = LocalDate.parse(last[0].data.substring(0, 10))
-            var ltimecurrent = LocalTime.parse(last[0].data.substring(11, 19))
-            val hourstoStay = LocalTime.parse("01:00:00")
 
-            var doses = 0
+        // get body params data
+        val params = database.parameterDAO().getAll(userId!!)
+        if (params.size > 0) {
+            val sex = params[0].gender
+            val w = params[0].weight
+            if (sex == "male") {
+                k = 0.7f
+                burnalco = 12
+            } else {
+                k = 0.6f
+                burnalco = 10
+            }
 
-            for (l in last) {
-                ldatacurrent = LocalDate.parse(l.data.substring(0, 10))
-                ltimecurrent = LocalTime.parse(l.data.substring(11, 19))
-                when (l.alcohol_name) {
-                    "PIWO" -> {
-                        if (starttime.plusHours(hourstoStay.hour.toLong())
-                                .isBefore(ltimecurrent) || startdata != ldatacurrent
-                        ) {
-                            starttime = ltimecurrent
-                            startdata = ldatacurrent
-                            doses = (l.capacity / 250).toInt()
-                        } else {
-                            val dose = (l.capacity / 250).toInt()
-                            doses += dose
+            var days=0
+            val last = database.alcoholDrunkDAO().getLastDrunk()
+            if (last.size != 0) {
+                // czas od którego będziemy liczyć promile
+                var startdata = LocalDate.parse(last[0].data.substring(0, 10))
+                var starttime = LocalTime.parse(last[0].data.substring(11, 19))
+                var ldatacurrent = LocalDate.parse(last[0].data.substring(0, 10))
+                var ltimecurrent = LocalTime.parse(last[0].data.substring(11, 19))
+                val hourstoStay = LocalTime.parse("01:00:00")
+
+                var doses = 0
+
+                for (l in last) {
+                    ldatacurrent = LocalDate.parse(l.data.substring(0, 10))
+                    ltimecurrent = LocalTime.parse(l.data.substring(11, 19))
+                            if (starttime.plusHours(hourstoStay.hour.toLong())
+                                            .isBefore(ltimecurrent) || startdata != ldatacurrent
+                            ) {
+                                starttime = ltimecurrent
+                                startdata = ldatacurrent
+                                doses = (l.capacity *l.percent_number/100).toInt()
+                            } else {
+                                val dose = (l.capacity * l.percent_number/100).toInt()
+                                doses += dose
+                            }
                         }
+                // kieliszek
+                val deltapicia = LocalTime.parse(LocalTime.now().toString()).minusHours(starttime.hour.toLong())
+                val mgofBurnAlco = deltapicia.hour * burnalco
+                val mgofConcuptedAlco = doses * 0.8
+
+                val p = (mgofConcuptedAlco - mgofBurnAlco) / (k * w)
+                val df = DecimalFormat("#.##")
+                df.roundingMode = RoundingMode.HALF_DOWN
+                v.text = df.format(p).toString()
+
+                // autko
+                var readytogo = LocalTime.parse("00:00:00")
+                readytogo = readytogo.plusHours(doses.toLong())
+                val final = starttime.plusHours(readytogo.hour.toLong())
+
+                carTextView.text = final.toString()
+
+                // autko - kolor
+                when {
+                    readytogo.hour <= 0 -> {
+                        currentcarimg.setImageResource(carsIMG[0])
                     }
-                    "WINO" -> {
-                        if (starttime.plusHours(hourstoStay.hour.toLong())
-                                .isBefore(ltimecurrent) || startdata != ldatacurrent
-                        ) {
-                            starttime = ltimecurrent
-                            startdata = ldatacurrent
-                            doses = (l.capacity / 100).toInt()
-                        } else {
-                            val dose = (l.capacity / 100).toInt()
-                            doses += dose
-                        }
+                    readytogo.hour < 4 -> {
+                        currentcarimg.setImageResource(carsIMG[1])
                     }
-                    "WÓDKA" -> {
-                        if (starttime.plusHours(hourstoStay.hour.toLong())
-                                .isBefore(ltimecurrent) || startdata != ldatacurrent
-                        ) {
-                            starttime = ltimecurrent
-                            startdata = ldatacurrent
-                            doses = (l.capacity / 30).toInt()
-                        } else {
-                            val dose = (l.capacity / 30).toInt()
-                            doses += dose
-                        }
+                    readytogo.hour < 9 -> {
+                        currentcarimg.setImageResource(carsIMG[2])
                     }
                     else -> {
-                        if (starttime.plusHours(hourstoStay.hour.toLong())
-                                .isBefore(ltimecurrent) || startdata != ldatacurrent
-                        ) {
-                            starttime = ltimecurrent
-                            startdata = ldatacurrent
-                            doses = (l.capacity / 50).toInt()
-                        } else {
-                            val dose = (l.capacity / 50).toInt()
-                            doses += dose
-                        }
+                        currentcarimg.setImageResource(carsIMG[3])
                     }
                 }
+
+                // ustawianie powiadomienie
+                val finalHour = final.hour * 60 * 60
+                val finalMinute = final.minute * 60
+
+                val nowHour = LocalTime.now().hour * 60 * 60
+                val nowMinute = LocalTime.now().minute * 60
+
+
+                createNotification((finalMinute + finalHour + final.second) -
+                        (nowHour + nowMinute + LocalTime.now().second),
+                        shared.getString("notifications", "false")!!)
+
+
+            } else {
+                currentcarimg.setImageResource(carsIMG[0])
+                carTextView.text = "GO"
+                v.text = "0.0"
             }
-
-            // kieliszek
-            val deltapicia = LocalTime.parse(LocalTime.now().toString()).minusHours(starttime.hour.toLong())
-            val mgofBurnAlco = deltapicia.hour * burnalco
-            val mgofConcuptedAlco = doses * 10
-
-            val p = (mgofConcuptedAlco - mgofBurnAlco) / (k * w)
-            val df = DecimalFormat("#.##")
-            df.roundingMode = RoundingMode.HALF_DOWN
-            v.text = df.format(p).toString()
-
-            // autko
-            var readytogo = LocalTime.parse("00:00:00")
-            readytogo = readytogo.plusHours(doses.toLong())
-            val final = starttime.plusHours(readytogo.hour.toLong())
-
-            carTextView.text = final.toString()
-
-            // autko - kolor
-            when {
-                readytogo.hour <= 0 -> {
-                    currentcarimg.setImageResource(carsIMG[0])
-                }
-                readytogo.hour < 4 -> {
-                    currentcarimg.setImageResource(carsIMG[1])
-                }
-                readytogo.hour < 9 -> {
-                    currentcarimg.setImageResource(carsIMG[2])
-                }
-                else -> {
-                    currentcarimg.setImageResource(carsIMG[3])
-                }
-            }
-
-            // ustawianie powiadomienie
-            val finalHour = final.hour * 60 * 60
-            val finalMinute = final.minute * 60
-
-            val nowHour = LocalTime.now().hour * 60 * 60
-            val nowMinute = LocalTime.now().minute * 60
-
-
-            createNotification((finalMinute + finalHour + final.second) -
-                    (nowHour + nowMinute + LocalTime.now().second),
-                shared.getString("notifications", "false")!!)
-
-
-        } else {
+        }
+        else{
             currentcarimg.setImageResource(carsIMG[0])
-            carTextView.text = "GO"
-            v.text = "0.0"
+            carTextView.text = "USTAW PARAMETRY"
+            v.text = "USTAW PARAMETRY"
         }
     }
 }

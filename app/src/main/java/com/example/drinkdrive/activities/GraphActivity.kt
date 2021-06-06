@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.Room
 import com.example.drinkdrive.R
 import com.example.drinkdrive.database.AlcoholDrunk
 import com.example.drinkdrive.database.AppDatabase
@@ -19,7 +20,14 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_parameters.*
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.*
 
 
 class GraphActivity : AppCompatActivity() {
@@ -33,6 +41,7 @@ class GraphActivity : AppCompatActivity() {
     private var typeOfAlco = mutableListOf<String>()
     private var typeOfAlcoPopulariti = mutableListOf<Float>()
     private var isModified : Boolean = false
+    private lateinit var database: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,16 +49,18 @@ class GraphActivity : AppCompatActivity() {
 
         // take a data from intent
         val items = intent.getParcelableArrayListExtra<AlcoholDrunk>("data")
-
         // group by date and capacity
+
         for (item in items!!) {
             if (item.data.substring(0, 11) !in date) {
                 date.add(item.data.substring(0, 11))
-                wypite.add(item.capacity)
+                wypite.add(item.capacity*item.percent_number/100)
             } else {
                 val x = date.lastIndexOf(item.data.substring(0, 11))
-                wypite[x] += item.capacity
+                wypite[x] += item.capacity*item.percent_number/100
             }
+
+
 
             if (item.alcohol_name !in typeOfAlco) {
                 typeOfAlco.add(item.alcohol_name)
@@ -58,6 +69,7 @@ class GraphActivity : AppCompatActivity() {
                 val x = typeOfAlco.lastIndexOf(item.alcohol_name)
                 typeOfAlcoPopulariti[x] += 1f
             }
+
         }
 
         if (date.size == 1) {
@@ -83,7 +95,7 @@ class GraphActivity : AppCompatActivity() {
         }
         i = 0
         for (w in wypite) {
-            dataline.add(Entry(i.toFloat(), wypite[i]))
+            dataline.add(Entry(i.toFloat(), wypite[wypite.size-1-i]))
             i++
         }
 

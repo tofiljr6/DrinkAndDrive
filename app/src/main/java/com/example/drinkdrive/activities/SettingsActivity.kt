@@ -10,6 +10,8 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.room.Room
 import com.example.drinkdrive.R
 import com.example.drinkdrive.database.AppDatabase
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.lang.Exception
 
 class SettingsActivity : AppCompatActivity() {
@@ -36,7 +38,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     fun deleteHistory(view: View) {
-        database.alcoholDrunkDAO().deleteAll()
+        database.alcoholDrunkDAO().deleteAll(Firebase.auth.currentUser!!.uid)
     }
 
     fun notifications(view: View) {

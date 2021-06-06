@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DrinkDrive">
-        <activity android:name=".activities.GraphActivity"></activity>
+        <activity android:name=".activities.CoctailActivity"></activity>
+        <activity android:name=".activities.GraphActivity" />
 
         <service
             android:name=".service.MyService"
@@ -41,7 +42,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".adapters.NotificationAdapter"/>
+        <receiver android:name=".adapters.NotificationAdapter" />
     </application>
 
 </manifest>

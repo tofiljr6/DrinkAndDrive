@@ -15,4 +15,7 @@
     <item
         android:id="@+id/item5"
         android:title="Wyloguj"/>
+    <item
+        android:id="@+id/item6"
+        android:title="Zaproponuj koktajlt"/>
 </menu>

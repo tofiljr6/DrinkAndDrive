@@ -6,61 +6,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RadioGroup
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_activityTime"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="49dp"
+        android:layout_marginEnd="273dp">
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="78dp"
+            android:text="RadioButton" />
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="86dp"
+            android:text="RadioButton" />
+    </RadioGroup>
+
     <TextView
         android:id="@+id/textView_activityTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chcę jechać:"
+        android:layout_alignParentTop="true"
 
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="83dp"
         android:layout_marginBottom="30dp"
 
-        android:textSize="30sp"
+        android:text="Chcę jechać:"
 
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        />
-
-    <CheckBox
-        android:id="@+id/today_activityTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_activityTime"
-        android:textSize="25sp"
-        android:layout_centerHorizontal="true"
-
-
-        android:text="Dzisiaj" />
-
-    <CheckBox
-        android:id="@+id/tomorrow_activityTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_below="@id/today_activityTime"
-        android:textSize="25sp"
-        android:layout_centerHorizontal="true"
-        android:text="Jutro" />
+        android:textSize="30sp" />
 
     <Button
-        android:id="@+id/selectHour_activityTime"
+        android:id="@+id/buttonTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tomorrow_activityTime"
-        android:textSize="20sp"
-        android:layout_marginTop="100dp"
-        android:layout_centerHorizontal="true"
-        android:text="Wybierz godzinę" />
+        android:layout_below="@+id/group"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-148dp"
+        android:layout_marginEnd="73dp"
+        android:text="Time"/>
 
     <TextView
-        android:id="@+id/selectedHour_activityDrive"
+        android:id="@+id/instructions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonTime"
+        android:layout_marginTop="317dp"
+        android:text="TextView" />
 
-        android:layout_below="@id/selectHour_activityTime"
-        android:textSize="20sp"
-        android:layout_marginTop= "30dp"
-        android:layout_centerHorizontal="true"
-        android:text="Wybrana godzina" />
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonTime"
+        android:layout_marginTop="195dp"
+        android:onClick="confirm"
+        android:text="CONF" />
 
 </RelativeLayout>
