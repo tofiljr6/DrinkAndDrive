@@ -8,7 +8,7 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_margin="20px"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -38,9 +38,10 @@
         android:id="@+id/button6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/chart_button"
+        android:background="@drawable/set_button"
         android:onClick="charts"
         android:text="CHARTS"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
