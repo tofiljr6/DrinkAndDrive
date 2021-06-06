@@ -20,10 +20,12 @@ class HistoryRecyclerAdapter(private val data:List<AlcoholDrunk>):RecyclerView.A
         val name: TextView
         val capacity: TextView
         val date:TextView
+        val percent:TextView
         init{
             name=view.findViewById(R.id.alcoName);
             capacity=view.findViewById(R.id.alcoCapacity)
             date=view.findViewById(R.id.alcoDate)
+            percent=view.findViewById(R.id.alcoPercent)
         }
     }
 
@@ -42,8 +44,9 @@ class HistoryRecyclerAdapter(private val data:List<AlcoholDrunk>):RecyclerView.A
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item=data[position]
         holder.name.text=item.alcohol_name
-        holder.capacity.text=item.capacity.toString()
+        holder.capacity.text=item.capacity.toInt().toString()+" ml"
         holder.date.text=item.data
+        holder.percent.text=item.percent_number.toString()+" %"
     }
 
 }

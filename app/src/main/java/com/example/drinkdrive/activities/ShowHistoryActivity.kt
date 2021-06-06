@@ -50,7 +50,6 @@ class ShowHistoryActivity : AppCompatActivity() {
         val recycler=findViewById<RecyclerView>(R.id.recyclerView)
         recycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         recycler.adapter=adapter
         val swiper=object: SwipeToDelete(this,0, ItemTouchHelper.RIGHT){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {

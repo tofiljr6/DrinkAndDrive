@@ -56,7 +56,7 @@ class ViewPagerAdapter(private val data:List<Alcohol>,private val database: AppD
                 database.alcoholDrunkDAO().insert(item.name,item.percent,item.capacity.toFloat(),currentDateTime.format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),user.toString())
             }
-            MotionToast.createColorToast(holder.itemView.context as Activity,"Dodano","Wypiles: "+item.name,
+            MotionToast.createColorToast(holder.itemView.context as Activity,"Added","You drunk: "+item.name,
                     MotionToast.TOAST_SUCCESS,
                     MotionToast.GRAVITY_BOTTOM,
                     MotionToast.SHORT_DURATION,

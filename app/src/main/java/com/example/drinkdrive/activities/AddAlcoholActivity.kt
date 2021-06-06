@@ -47,7 +47,7 @@ class AddAlcoholActivity : AppCompatActivity() {
 
     fun confirm(view: View) {
         if(name.text.isEmpty()){
-            MotionToast.createColorToast(this,"Uzupełnij informacje","Nazwa nie moze byc pusta",
+            MotionToast.createColorToast(this,"Fill all the details","Name cannot be empty",
                 MotionToast.TOAST_WARNING,
                 MotionToast.GRAVITY_BOTTOM,
                 MotionToast.LONG_DURATION,
@@ -56,7 +56,7 @@ class AddAlcoholActivity : AppCompatActivity() {
         }
         intent.putExtra("name",name.text.toString())
         if(capacity.text.isEmpty()){
-            MotionToast.createColorToast(this,"Uzupełnij informacje","Pojemnosc nie moze byc pusta",
+            MotionToast.createColorToast(this,"Fill all the details","Capacity cannot be empty",
                 MotionToast.TOAST_WARNING,
                 MotionToast.GRAVITY_BOTTOM,
                 MotionToast.LONG_DURATION,
@@ -66,7 +66,7 @@ class AddAlcoholActivity : AppCompatActivity() {
         intent.putExtra("capacity",capacity.text.toString().toFloat())
         if(uri==null) {
             MotionToast.createColorToast(
-                this, "Uzupełnij informacje", "Zdjecie nie moze byc puste",
+                this, "Fill all the details", "Photo cannot be empty",
                 MotionToast.TOAST_WARNING,
                 MotionToast.GRAVITY_BOTTOM,
                 MotionToast.LONG_DURATION,
@@ -77,7 +77,7 @@ class AddAlcoholActivity : AppCompatActivity() {
         intent.putExtra("uri",uri.toString())
         if(percent.selectedItem.toString()=="0") {
             MotionToast.createColorToast(
-                this, "Uzupełnij informacje", "Ustaw procenty",
+                this, "Fill ale the details", "Set percent",
                 MotionToast.TOAST_WARNING,
                 MotionToast.GRAVITY_BOTTOM,
                 MotionToast.LONG_DURATION,
