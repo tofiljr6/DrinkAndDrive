@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     private val RC_SIGN_IN=125
     private lateinit var shared: SharedPreferences
     var userId:String?=null
-    private var carsIMG = arrayOf(R.drawable.cargreen, R.drawable.caryellow, R.drawable.car2, R.drawable.carblack)
+    private var carsIMG = arrayOf(R.drawable.cargreen2, R.drawable.caryellow2, R.drawable.carred2, R.drawable.carblack2)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
