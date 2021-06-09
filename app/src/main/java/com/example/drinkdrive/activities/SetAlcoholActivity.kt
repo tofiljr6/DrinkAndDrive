@@ -27,6 +27,8 @@ class SetAlcoholActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set_alcohol)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        title="Set alcohol parameters"
 
         try {
             database = Room.databaseBuilder(
@@ -73,7 +75,7 @@ class SetAlcoholActivity : AppCompatActivity() {
                 val user = Firebase.auth.currentUser!!.uid
                 database.alcoholDrunkDAO().insert(item.name,percent,capacityText,currentDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),user.toString())
             }
-            MotionToast.createColorToast(this,"Dodano","Wypiles: "+item.name,
+            MotionToast.createColorToast(this,"Added","You drunk: "+item.name,
                 MotionToast.TOAST_SUCCESS,
                 MotionToast.GRAVITY_BOTTOM,
                 MotionToast.SHORT_DURATION,
@@ -85,5 +87,9 @@ class SetAlcoholActivity : AppCompatActivity() {
             finish()
             true
         }
+    }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 }

@@ -37,6 +37,7 @@ class PhotoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo)
+        title="Photo"
         button = findViewById(R.id.cameraButton)
         if (allPermissionsGranted()) {
             startCamera()

@@ -45,6 +45,8 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     private lateinit var database:AppDatabase
     private val RC_SIGN_IN=125
     private lateinit var shared: SharedPreferences
+    private lateinit var sharedPromile: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
     var userId:String?=null
     private var carsIMG = arrayOf(R.drawable.cargreen2, R.drawable.caryellow2, R.drawable.carred2, R.drawable.carblack2)
 
@@ -67,7 +69,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             login()
         }
         else{
-            title="User: ${Firebase.auth.currentUser!!.displayName}"
+            title="Hello, ${Firebase.auth.currentUser!!.displayName}"
             items = database.alcoholDAO().getAll(userId!!)
             adapter= ViewPagerAdapter(items,database,this, this)
             val viewPager=findViewById<ViewPager2>(R.id.viewPager)
@@ -110,10 +112,12 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     override fun onResume() {
         super.onResume()
         promile()
-
-        val exist=database.parameterDAO().getAll(Firebase.auth.currentUser!!.uid)
-        if (exist.size == 0) {
-            setParameters()
+        val user=Firebase.auth.currentUser
+        if(user!=null) {
+            val exist = database.parameterDAO().getAll(user.uid)
+            if (exist.size == 0) {
+                setParameters()
+            }
         }
     }
 
@@ -207,22 +211,23 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             }
         }
         if(requestCode==126) {
-            title="User: ${Firebase.auth.currentUser!!.displayName}"
             if(data!=null) {
                 val operation = data.getIntExtra("operation", 0)
                 if (operation == 1) {
                     login()
                 }
-                if (operation == 2) {
-                    items = database.alcoholDAO().getAll(userId!!)
-                    adapter= ViewPagerAdapter(items,database,this, this)
-                    val viewPager=findViewById<ViewPager2>(R.id.viewPager)
-                    val tabLayout=findViewById<TabLayout>(R.id.tab)
-                    viewPager.adapter=adapter
-                    TabLayoutMediator(tabLayout,viewPager){tab,position->
-                        tab.text=items[position].name
-                    }.attach()
-
+                else {
+                    title = "User: ${Firebase.auth.currentUser!!.displayName}"
+                    if (operation == 2) {
+                        items = database.alcoholDAO().getAll(userId!!)
+                        adapter = ViewPagerAdapter(items, database, this, this)
+                        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+                        val tabLayout = findViewById<TabLayout>(R.id.tab)
+                        viewPager.adapter = adapter
+                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                            tab.text = items[position].name
+                        }.attach()
+                    }
                 }
             }
         }
@@ -338,13 +343,17 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 df.roundingMode = RoundingMode.HALF_DOWN
 
                 if (p > 0) {
-                    v.text = df.format(p).toString()
+                    v.text = df.format(p).toString()+"‰"
                 } else {
-                    v.text = "0.0"
+                    v.text = "0.0‰"
                 }
 
                 // autko
-                val colorcarhours = endOfDrunk.minusHours(LocalTime.parse(LocalTime.now().toString()).hour.toLong()).hour
+                var colorcarhours = endOfDrunk.minusHours(LocalTime.parse(LocalTime.now().toString()).hour.toLong()).hour
+
+                if (doses >= 24) { // przepijemy jeden dzień xd
+                    colorcarhours += 24
+                }
 
                 if (colorcarhours > 0) {
                     carTextView.text = endOfDrunk.toString()
@@ -352,11 +361,12 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                     carTextView.text = "GO"
                 }
 
+                val dopuszczonepromile = params[0].allowed
 
                 when {
-                    colorcarhours <= 0 -> currentcarimg.setImageResource(carsIMG[0])
-                    colorcarhours <= 5 -> currentcarimg.setImageResource(carsIMG[1])
-                    colorcarhours <= 9 -> currentcarimg.setImageResource(carsIMG[2])
+                    p <= dopuszczonepromile -> currentcarimg.setImageResource(carsIMG[0])
+                    p <= dopuszczonepromile + 0.5 -> currentcarimg.setImageResource(carsIMG[1])
+                    p <= dopuszczonepromile + 1 -> currentcarimg.setImageResource(carsIMG[2])
                     else -> currentcarimg.setImageResource(carsIMG[3])
                 }
 
@@ -378,19 +388,19 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             } else {
                 currentcarimg.setImageResource(carsIMG[0])
                 carTextView.text = "GO"
-                v.text = "0.0"
+                v.text = "0.0‰"
             }
         }
         else{
             currentcarimg.setImageResource(carsIMG[0])
-            carTextView.text = "USTAW PARAMETRY"
-            v.text = "USTAW PARAMETRY"
+            carTextView.text = "SET PARAMETERS"
+            v.text = "SET PARAMETERS"
         }
     }
 
     private fun updateDoses(l : AlcoholDrunk, doses: Int): Int {
         var d = doses
-        when(l.alcohol_name) {
+        /*when(l.alcohol_name) {
             "BEER"           -> d += ((l.capacity / 250) * (l.percent_number / 5 )).toInt()
             "WINE"           -> d += ((l.capacity / 100) * (l.percent_number / 12)).toInt()
             "VODKA"          -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
@@ -401,7 +411,8 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             "FLAVORED VODKA" -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
             "RUM"            -> d += ((l.capacity / 35 ) * (l.percent_number / 40)).toInt()
             "TEQUILA"        -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
-        }
+        }*/
+        d+=(l.capacity*l.percent_number/1200).toInt()
         return d
     }
 }

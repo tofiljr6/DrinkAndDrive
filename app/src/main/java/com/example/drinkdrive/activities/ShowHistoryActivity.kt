@@ -34,6 +34,8 @@ class ShowHistoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_history)
+        title="History"
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         try {
             database = Room.databaseBuilder(
                 this,
@@ -72,6 +74,8 @@ class ShowHistoryActivity : AppCompatActivity() {
                     }.show()
             }
         }
+
+
         val itemTouchHelper= ItemTouchHelper(swiper)
         itemTouchHelper.attachToRecyclerView(recycler)
         val button=findViewById<ToggleButton>(R.id.toggleButton)
@@ -131,6 +135,10 @@ class ShowHistoryActivity : AppCompatActivity() {
             true
         }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
     fun charts(view: View) {
         val myIntent= Intent(this,GraphActivity::class.java)
         myIntent.putExtra("data",ArrayList<AlcoholDrunk>(items))

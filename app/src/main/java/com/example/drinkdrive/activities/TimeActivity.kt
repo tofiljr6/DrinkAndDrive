@@ -30,6 +30,8 @@ class TimeActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time)
+        title="When can I drive"
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         try {
             database = Room.databaseBuilder(
                 this,
@@ -42,6 +44,10 @@ class TimeActivity: AppCompatActivity() {
         }
         button = findViewById(R.id.buttonTime)
         button.setOnClickListener { timePicker(it) }
+    }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     fun timePicker(view: View) {
