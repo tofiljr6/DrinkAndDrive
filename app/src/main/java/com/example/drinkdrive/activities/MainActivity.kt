@@ -264,7 +264,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         val channel = NotificationChannel("notification", name, importance).apply {
             description = descriptionText
         }
-        // Register the channel with the system
+
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
@@ -370,7 +370,8 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 val nowMinute = LocalTime.now().minute * 60
 
 
-                createNotification(10,
+                createNotification((finalMinute + finalHour + final.second) -
+                        (nowHour + nowMinute + LocalTime.now().second),
                         shared.getString("notifications", "false")!!)
 
 
