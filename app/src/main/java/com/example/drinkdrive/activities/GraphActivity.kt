@@ -56,10 +56,10 @@ class GraphActivity : AppCompatActivity() {
         for (item in items!!) {
             if (item.data.substring(0, 11) !in date) {
                 date.add(item.data.substring(0, 11))
-                wypite.add(item.capacity*item.percent_number/100)
+                wypite.add(item.capacity*item.percent_number/120)
             } else {
                 val x = date.lastIndexOf(item.data.substring(0, 11))
-                wypite[x] += item.capacity*item.percent_number/100
+                wypite[x] += item.capacity*item.percent_number/120
             }
 
 
@@ -100,6 +100,8 @@ class GraphActivity : AppCompatActivity() {
             dataline.add(Entry(i.toFloat(), wypite[wypite.size-1-i]))
             i++
         }
+        pieChart.description.text=""
+        lineChart.description.text=""
 
         // spinner
         val spinner = findViewById<Spinner>(R.id.spinnerGraph)
@@ -135,7 +137,7 @@ class GraphActivity : AppCompatActivity() {
         pieChart.visibility = View.VISIBLE
         lineChart.visibility = View.INVISIBLE
 
-        val pieDataSet = PieDataSet(datapie, "pie chart")
+        val pieDataSet = PieDataSet(datapie, "Favourite drinks")
         pieDataSet.setAutomaticallyDisableSliceSpacing(true)
         pieDataSet.setColors(intArrayOf(R.color.col1, R.color.col2, R.color.col3,
                 R.color.col4, R.color.col5, R.color.col6,
@@ -149,6 +151,7 @@ class GraphActivity : AppCompatActivity() {
         // make visible right chart
         pieChart.visibility = View.INVISIBLE
         lineChart.visibility = View.VISIBLE
+
 
         // axis formatter
         val formatter: ValueFormatter =
@@ -166,7 +169,7 @@ class GraphActivity : AppCompatActivity() {
         xAxis.position = XAxis.XAxisPosition.BOTTOM
 
         // draw chart
-        val lineDataSet = LineDataSet(dataline, "Spożycie alkoholu w ostatnich dniach")
+        val lineDataSet = LineDataSet(dataline, "Consumption of alcohol in last days")
         val lineData = LineData(lineDataSet)
         lineChart.data = lineData
         lineChart.animateX(100)
