@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/col2">
 
 
     <TextView
@@ -12,19 +13,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-
         android:layout_centerHorizontal="true"
 
-        android:layout_marginTop="96dp"
-        android:text="Chcę jechać:"
+        android:layout_marginTop="48dp"
+        android:text="I to want drive:"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
         android:id="@+id/RadioGroup_activityTime"
-        android:layout_width="115dp"
+        android:layout_width="wrap_content"
         android:layout_height="73dp"
         android:layout_below="@id/textView_activityTime"
         android:layout_centerHorizontal="true"
@@ -38,17 +39,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:text="Dzisiaj"
+            android:text="Today"
             android:textSize="25sp" />
 
         <RadioButton
             android:id="@+id/tomorrow_activityTime"
-            android:layout_width="104dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
             android:layout_marginTop="4dp"
             android:layout_marginEnd="88dp"
-            android:text="Jutro"
+            android:text="Tommorow"
             android:textSize="25sp" />
     </RadioGroup>
 
@@ -58,11 +59,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/RadioGroup_activityTime"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="76dp"
-        android:text="Wybierz godzinę"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/set_button"
+        android:text="Select hour"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RadioGroup_activityTime" />
 
@@ -74,10 +76,9 @@
         android:layout_below="@id/selectHour_activityTime"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
-        android:text="Wybrana godzina"
+        android:text="XXXXXXXX"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selectHour_activityTime" />
 
@@ -87,21 +88,27 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/RadioGroup_activityTime"
         android:layout_centerHorizontal="true"
-        android:text="Oblicz!"
+        android:background="@drawable/set_button"
+        android:text="Calculate!"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectedHour_activityDrive" />
+        app:layout_constraintTop_toBottomOf="@+id/selectedHour_activityDrive"
+        app:layout_constraintVertical_bias="0.112" />
 
     <TextView
         android:id="@+id/resultTextView_activityTime"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calculateButton_activityTime" />
+        app:layout_constraintTop_toBottomOf="@+id/calculateButton_activityTime"
+        app:layout_constraintVertical_bias="0.183" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
