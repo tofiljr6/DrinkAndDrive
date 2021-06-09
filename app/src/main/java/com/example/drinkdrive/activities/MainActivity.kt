@@ -344,7 +344,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 }
 
                 // autko
-                val colorcarhours = endOfDrunk.minusHours(LocalTime.parse(LocalTime.now().toString()).hour.toLong()).hour
+                var colorcarhours = endOfDrunk.minusHours(LocalTime.parse(LocalTime.now().toString()).hour.toLong()).hour
 
                 if (colorcarhours > 0) {
                     carTextView.text = endOfDrunk.toString()
@@ -352,6 +352,9 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                     carTextView.text = "GO"
                 }
 
+                if (doses >= 24) { // przepijemy jeden dzień xd
+                    colorcarhours += 24
+                }
 
                 when {
                     colorcarhours <= 0 -> currentcarimg.setImageResource(carsIMG[0])
