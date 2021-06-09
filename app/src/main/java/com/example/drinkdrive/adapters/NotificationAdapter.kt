@@ -12,7 +12,7 @@ class NotificationAdapter : BroadcastReceiver() {
         val builder = NotificationCompat.Builder(context!!, "notification")
             .setSmallIcon(R.drawable.car0)
             .setContentTitle("You can drive")
-            .setContentText("your alcohol levels have dropped to 0")
+            .setContentText("Your alcohol level have dropped to 0")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         val notificationManager = NotificationManagerCompat.from(context)
