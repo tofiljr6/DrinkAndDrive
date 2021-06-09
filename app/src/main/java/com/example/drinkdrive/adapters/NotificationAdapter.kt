@@ -11,8 +11,8 @@ class NotificationAdapter : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val builder = NotificationCompat.Builder(context!!, "notification")
             .setSmallIcon(R.drawable.car0)
-            .setContentTitle("Możesz już prowadzić")
-            .setContentText("Stężenie alkoholu w twoim organiźmie spadło do 0‰")
+            .setContentTitle("You can drive")
+            .setContentText("your alcohol levels have dropped to 0")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         val notificationManager = NotificationManagerCompat.from(context)

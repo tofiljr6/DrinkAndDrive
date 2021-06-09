@@ -114,10 +114,12 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     override fun onResume() {
         super.onResume()
         promile()
-
-        val exist=database.parameterDAO().getAll(Firebase.auth.currentUser!!.uid)
-        if (exist.size == 0) {
-            setParameters()
+        val user=Firebase.auth.currentUser
+        if(user!=null) {
+            val exist = database.parameterDAO().getAll(user.uid)
+            if (exist.size == 0) {
+                setParameters()
+            }
         }
     }
 
@@ -211,22 +213,23 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             }
         }
         if(requestCode==126) {
-            title="User: ${Firebase.auth.currentUser!!.displayName}"
             if(data!=null) {
                 val operation = data.getIntExtra("operation", 0)
                 if (operation == 1) {
                     login()
                 }
-                if (operation == 2) {
-                    items = database.alcoholDAO().getAll(userId!!)
-                    adapter= ViewPagerAdapter(items,database,this, this)
-                    val viewPager=findViewById<ViewPager2>(R.id.viewPager)
-                    val tabLayout=findViewById<TabLayout>(R.id.tab)
-                    viewPager.adapter=adapter
-                    TabLayoutMediator(tabLayout,viewPager){tab,position->
-                        tab.text=items[position].name
-                    }.attach()
-
+                else {
+                    title = "User: ${Firebase.auth.currentUser!!.displayName}"
+                    if (operation == 2) {
+                        items = database.alcoholDAO().getAll(userId!!)
+                        adapter = ViewPagerAdapter(items, database, this, this)
+                        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+                        val tabLayout = findViewById<TabLayout>(R.id.tab)
+                        viewPager.adapter = adapter
+                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                            tab.text = items[position].name
+                        }.attach()
+                    }
                 }
             }
         }
@@ -342,9 +345,9 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 df.roundingMode = RoundingMode.HALF_DOWN
 
                 if (p > 0) {
-                    v.text = df.format(p).toString()
+                    v.text = df.format(p).toString()+"‰"
                 } else {
-                    v.text = "0.0"
+                    v.text = "0.0‰"
                 }
 
                 // autko
@@ -387,19 +390,32 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             } else {
                 currentcarimg.setImageResource(carsIMG[0])
                 carTextView.text = "GO"
-                v.text = "0.0"
+                v.text = "0.0‰"
             }
         }
         else{
             currentcarimg.setImageResource(carsIMG[0])
-            carTextView.text = "USTAW PARAMETRY"
-            v.text = "USTAW PARAMETRY"
+            carTextView.text = "SET PARAMETERS"
+            v.text = "SET PARAMETERS"
         }
     }
 
     private fun updateDoses(l : AlcoholDrunk, doses: Int): Int {
         var d = doses
-        d += (l.capacity * l.percent_number / 1000.0).toInt()
+        /*when(l.alcohol_name) {
+            "BEER"           -> d += ((l.capacity / 250) * (l.percent_number / 5 )).toInt()
+            "WINE"           -> d += ((l.capacity / 100) * (l.percent_number / 12)).toInt()
+            "VODKA"          -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+            "ABSINTH"        -> d += ((l.capacity / 20 ) * (l.percent_number / 20)).toInt()
+            "GIN"            -> d += ((l.capacity / 50 ) * (l.percent_number / 35)).toInt()
+            "WHISKY"         -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+            "LIQUEUR"        -> d += ((l.capacity / 25 ) * (l.percent_number / 40)).toInt()
+            "FLAVORED VODKA" -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+            "RUM"            -> d += ((l.capacity / 35 ) * (l.percent_number / 40)).toInt()
+            "TEQUILA"        -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+        }*/
+        d+=(l.capacity*l.percent_number/1200).toInt()
+//        d += (l.capacity * l.percent_number / 1000.0).toInt()
         return d
     }
 }
