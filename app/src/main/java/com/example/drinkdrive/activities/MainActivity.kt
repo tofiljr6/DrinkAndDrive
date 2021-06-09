@@ -1,21 +1,25 @@
 package com.example.drinkdrive.activities
 
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.drinkdrive.R
+import com.example.drinkdrive.adapters.NotificationAdapter
 import com.example.drinkdrive.adapters.ViewPagerClick
 import com.example.drinkdrive.database.AlcoholDrunk
+import com.example.drinkdrive.database.AlcoholDrunkDAO
 import com.example.drinkdrive.database.AppDatabase
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.ViewPagerAdapter
@@ -24,13 +28,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_add_alcohol.*
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
-import java.lang.Double.valueOf
-import java.lang.Exception
+import www.sanju.motiontoast.MotionToast
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     private val RC_SIGN_IN=125
     private lateinit var shared: SharedPreferences
     var userId:String?=null
+    private var carsIMG = arrayOf(R.drawable.cargreen2, R.drawable.caryellow2, R.drawable.carred2, R.drawable.carblack2)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,20 +64,12 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         shared=getSharedPreferences("prefs", Context.MODE_PRIVATE)
         userId=shared.getString("user","noLogged")
         if(userId=="noLogged"){
-            val providers = arrayListOf(
-                AuthUI.IdpConfig.EmailBuilder().build()
-            )
-            startActivityForResult(
-                AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setAvailableProviders(providers)
-                    .build(),
-                RC_SIGN_IN)
+            login()
         }
         else{
             title="User: ${Firebase.auth.currentUser!!.displayName}"
             items = database.alcoholDAO().getAll(userId!!)
-            adapter= ViewPagerAdapter(items,database,this)
+            adapter= ViewPagerAdapter(items,database,this, this)
             val viewPager=findViewById<ViewPager2>(R.id.viewPager)
             val tabLayout=findViewById<TabLayout>(R.id.tab)
             viewPager.adapter=adapter
@@ -87,19 +80,43 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         var names = resources.getStringArray(R.array.alcohols)
         var images = resources.getStringArray(R.array.images)
         val firstName = database.alcoholDAO().getFirstName()
-        if (firstName != "PIWO") {
-            for (i in 0 until names.size) {
-                val alcohol = Alcohol(i + 1, names[i], images[i], capacity[i], percent[i], null)
-                database.alcoholDAO().insertAll(alcohol)
+
+        try {
+            if (firstName != names[0]) {
+                for (i in 0 until names.size) {
+                    val alcohol = Alcohol(i + 1, names[i], images[i], capacity[i], percent[i], null)
+                    database.alcoholDAO().insertAll(alcohol)
+                }
             }
-        }
+        } catch (ignored : android.database.sqlite.SQLiteConstraintException) {}
+
+        createNotificationChannel()
         promile()
+    }
+
+    private fun login(){
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build()
+        )
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(providers)
+                .build(),
+            RC_SIGN_IN)
+
     }
 
     override fun onResume() {
         super.onResume()
         promile()
+
+        val exist=database.parameterDAO().getAll(Firebase.auth.currentUser!!.uid)
+        if (exist.size == 0) {
+            setParameters()
+        }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)
@@ -112,9 +129,15 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             R.id.item2 ->setTime()
             R.id.item3 ->showHistory()
             R.id.item4 ->openSettings()
-            R.id.item5->logOut()
+            R.id.item5->coctail()
+            R.id.item6->logOut()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun coctail() {
+        val myIntent=Intent(this,CoctailActivity::class.java)
+        startActivity(myIntent)
     }
 
     private fun logOut() {
@@ -147,7 +170,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     }
     private fun openSettings() {
         val myIntent= Intent(this,SettingsActivity::class.java)
-        startActivity(myIntent)
+        startActivityForResult(myIntent,126)
     }
 
     fun addAlcohol(view: View) {
@@ -163,10 +186,10 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 val uri = data.getStringExtra("uri")
                 val capacity = data.getFloatExtra("capacity", 0F)
                 val percent = data.getFloatExtra("percent", 0F)
-                database.alcoholDAO().insert(name!!, uri!!, capacity!!, percent!!,userId!!)
-                val id=database.alcoholDAO().getLastID()
-                items.add(Alcohol(id, name!!, uri!!, capacity, percent,userId))
-                adapter.notifyItemInserted(items.size-1)
+                database.alcoholDAO().insert(name!!, uri!!, capacity!!, percent!!, userId!!)
+                val id = database.alcoholDAO().getLastID()
+                items.add(Alcohol(id, name!!, uri!!, capacity, percent, userId))
+                adapter.notifyItemInserted(items.size - 1)
             }
             if (requestCode == 124) {
                 val id = data.getIntExtra("id", 0)
@@ -183,6 +206,26 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 }
             }
         }
+        if(requestCode==126) {
+            title="User: ${Firebase.auth.currentUser!!.displayName}"
+            if(data!=null) {
+                val operation = data.getIntExtra("operation", 0)
+                if (operation == 1) {
+                    login()
+                }
+                if (operation == 2) {
+                    items = database.alcoholDAO().getAll(userId!!)
+                    adapter= ViewPagerAdapter(items,database,this, this)
+                    val viewPager=findViewById<ViewPager2>(R.id.viewPager)
+                    val tabLayout=findViewById<TabLayout>(R.id.tab)
+                    viewPager.adapter=adapter
+                    TabLayoutMediator(tabLayout,viewPager){tab,position->
+                        tab.text=items[position].name
+                    }.attach()
+
+                }
+            }
+        }
         if(requestCode==RC_SIGN_IN){
             if(data!=null){
                 title="User: ${Firebase.auth.currentUser!!.displayName}"
@@ -191,7 +234,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 editor.putString("user",userId.toString())
                 editor.commit()
                 items = database.alcoholDAO().getAll(userId!!)
-                adapter= ViewPagerAdapter(items,database,this)
+                adapter= ViewPagerAdapter(items,database,this, this)
                 val viewPager=findViewById<ViewPager2>(R.id.viewPager)
                 val tabLayout=findViewById<TabLayout>(R.id.tab)
                 viewPager.adapter=adapter
@@ -214,110 +257,151 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         true
     }
 
+    private fun createNotificationChannel() {
+        val name = "name"
+        val descriptionText = "des"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel("notification", name, importance).apply {
+            description = descriptionText
+        }
+        // Register the channel with the system
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun createNotification(time : Int, active : String) {
+        val intent = Intent(this, NotificationAdapter::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+        if (active == "true") {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * time, pendingIntent)
+        } else {
+            alarmManager.cancel(pendingIntent)
+        }
+    }
+
     fun promile () {
         // https://pl.wikipedia.org/wiki/Zawarto%C5%9B%C4%87_alkoholu_we_krwi
         var k = 0f // współczyniki płci
         var burnalco = 0
-
-        // get body params data
-        val shared = getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        val w = shared.getInt("weight", Context.MODE_PRIVATE).toFloat()
-        val sex = shared.getString("gender", "")
-        if (sex == "male") {
-            k = 0.7f
-            burnalco = 12
-        } else {
-            k = 0.6f
-            burnalco = 10
-        }
-
         val carTextView = findViewById<TextView>(R.id.promilleTextView)
         val v = findViewById<TextView>(R.id.promilleTextView2)
-
-        val last = database.alcoholDrunkDAO().getLastDrunk()
-        if (last.size != 0) {
+        val currentcarimg = findViewById<ImageView>(R.id.imageView)
 
 
-            // czas od którego będziemy liczyć promile
-            var startdata = LocalDate.parse(last[0].data.substring(0, 10))
-            var starttime = LocalTime.parse(last[0].data.substring(11, 19))
-            var ldatacurrent = LocalDate.parse(last[0].data.substring(0, 10))
-            var ltimecurrent = LocalTime.parse(last[0].data.substring(11, 19))
-            val hourstoStay = LocalTime.parse("01:00:00")
-
-            var doses = 0
-
-            for (l in last) {
-                ldatacurrent = LocalDate.parse(l.data.substring(0, 10))
-                ltimecurrent = LocalTime.parse(l.data.substring(11, 19))
-                when (l.alcohol_name) {
-                    "PIWO" -> {
-                        if (starttime.plusHours(hourstoStay.hour.toLong())
-                                .isBefore(ltimecurrent) || startdata != ldatacurrent
-                        ) {
-                            starttime = ltimecurrent
-                            startdata = ldatacurrent
-                            doses = (l.capacity / 250).toInt()
-                        } else {
-                            val dose = (l.capacity / 250).toInt()
-                            doses += dose
-                        }
-                    }
-                    "WINO" -> {
-                        if (starttime.plusHours(hourstoStay.hour.toLong())
-                                .isBefore(ltimecurrent) || startdata != ldatacurrent
-                        ) {
-                            starttime = ltimecurrent
-                            startdata = ldatacurrent
-                            doses = (l.capacity / 100).toInt()
-                        } else {
-                            val dose = (l.capacity / 100).toInt()
-                            doses += dose
-                        }
-                    }
-                    "WÓDKA" -> {
-                        if (starttime.plusHours(hourstoStay.hour.toLong())
-                                .isBefore(ltimecurrent) || startdata != ldatacurrent
-                        ) {
-                            starttime = ltimecurrent
-                            startdata = ldatacurrent
-                            doses = (l.capacity / 30).toInt()
-                        } else {
-                            val dose = (l.capacity / 30).toInt()
-                            doses += dose
-                        }
-                    }
-                    else -> {
-                        if (starttime.plusHours(hourstoStay.hour.toLong())
-                                .isBefore(ltimecurrent) || startdata != ldatacurrent
-                        ) {
-                            starttime = ltimecurrent
-                            startdata = ldatacurrent
-                            doses = (l.capacity / 50).toInt()
-                        } else {
-                            val dose = (l.capacity / 50).toInt()
-                            doses += dose
-                        }
-                    }
-                }
+        // get body params data
+        val params = database.parameterDAO().getAll(userId!!)
+        if (params.size > 0) {
+            val sex = params[0].gender
+            val w = params[0].weight
+            if (sex == "male") {
+                k = 0.7f
+                burnalco = 12
+            } else {
+                k = 0.6f
+                burnalco = 10
             }
 
-            // kieliszek
-            val deltapicia = LocalTime.parse(LocalTime.now().toString()).minusHours(starttime.hour.toLong())
-            val mgofBurnAlco = deltapicia.hour * burnalco
-            val mgofConcuptedAlco = doses * 10
+            var doses = 0 // dawki czystego alkoholu
+            val last = database.alcoholDrunkDAO().getLastDrunk()
+            if (last.size != 0) {
+                // od której zaczałem pić
+                var firstl = last[0]
+                var firstTime = LocalTime.parse(firstl.data.substring(11, 19))
+                doses = updateDoses(firstl, doses)
 
-            val p = (mgofConcuptedAlco - mgofBurnAlco) / (k * w)
-            val df = DecimalFormat("#.##")
-            df.roundingMode = RoundingMode.HALF_DOWN
-            v.text = df.format(p).toString()
+                var hoursToStay = LocalTime.parse("00:00:00") // .plusHours(doses.toLong()) // jedna dawska spala się godzinę
 
-            // autko
-            var readytogo = LocalTime.parse("00:00:00")
-            readytogo = readytogo.plusHours(doses.toLong())
-            val final = starttime.plusHours(readytogo.hour.toLong())
+                for (l in last) {
+                    val currentTime = LocalTime.parse(l.data.substring(11, 19))
+                    if (currentTime.minusHours(hoursToStay.hour.toLong()).isBefore(firstTime)) {
+                        doses = updateDoses(l, doses)
+                    }
+                }
 
-            carTextView.text = final.toString()
+                hoursToStay = hoursToStay.plusHours(doses.toLong())
+                val endOfDrunk = firstTime.plusHours(hoursToStay.hour.toLong())
+
+                // teraz pod zmienną,
+                // end of drunk mamy o której godzinie wytrzeźwiejemy
+                // pod zmienną doses ile spożyliśmy dawej czystego alkoholu
+                // pod zmienna first kiedy zaczeliśmy pić
+
+                // kieliszek
+                val deltapicia = LocalTime.parse(LocalTime.now().toString()).minusHours(firstTime.hour.toLong())
+                val mgofBurnAlco = deltapicia.hour * burnalco
+                val mgofConcuptedAlco = doses * 10 // 1 dawka = 10 g czystego alkoholu
+                val p = (mgofConcuptedAlco - mgofBurnAlco)/(k * w)
+                val df = DecimalFormat("#.##")
+                df.roundingMode = RoundingMode.HALF_DOWN
+
+                if (p > 0) {
+                    v.text = df.format(p).toString()
+                } else {
+                    v.text = "0.0"
+                }
+
+                // autko
+                val colorcarhours = endOfDrunk.minusHours(LocalTime.parse(LocalTime.now().toString()).hour.toLong()).hour
+
+                if (colorcarhours > 0) {
+                    carTextView.text = endOfDrunk.toString()
+                } else {
+                    carTextView.text = "GO"
+                }
+
+
+                when {
+                    colorcarhours <= 0 -> currentcarimg.setImageResource(carsIMG[0])
+                    colorcarhours <= 5 -> currentcarimg.setImageResource(carsIMG[1])
+                    colorcarhours <= 9 -> currentcarimg.setImageResource(carsIMG[2])
+                    else -> currentcarimg.setImageResource(carsIMG[3])
+                }
+
+                val final = endOfDrunk
+
+                // ustawianie powiadomienie
+                val finalHour = final.hour * 60 * 60
+                val finalMinute = final.minute * 60
+
+                val nowHour = LocalTime.now().hour * 60 * 60
+                val nowMinute = LocalTime.now().minute * 60
+
+
+                createNotification((finalMinute + finalHour + final.second) -
+                        (nowHour + nowMinute + LocalTime.now().second),
+                        shared.getString("notifications", "false")!!)
+
+
+            } else {
+                currentcarimg.setImageResource(carsIMG[0])
+                carTextView.text = "GO"
+                v.text = "0.0"
+            }
         }
+        else{
+            currentcarimg.setImageResource(carsIMG[0])
+            carTextView.text = "USTAW PARAMETRY"
+            v.text = "USTAW PARAMETRY"
+        }
+    }
+
+    private fun updateDoses(l : AlcoholDrunk, doses: Int): Int {
+        var d = doses
+        when(l.alcohol_name) {
+            "BEER"           -> d += ((l.capacity / 250) * (l.percent_number / 5 )).toInt()
+            "WINE"           -> d += ((l.capacity / 100) * (l.percent_number / 12)).toInt()
+            "VODKA"          -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+            "ABSINTH"        -> d += ((l.capacity / 20 ) * (l.percent_number / 20)).toInt()
+            "GIN"            -> d += ((l.capacity / 50 ) * (l.percent_number / 35)).toInt()
+            "WHISKY"         -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+            "LIQUEUR"        -> d += ((l.capacity / 25 ) * (l.percent_number / 40)).toInt()
+            "FLAVORED VODKA" -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+            "RUM"            -> d += ((l.capacity / 35 ) * (l.percent_number / 40)).toInt()
+            "TEQUILA"        -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+        }
+        return d
     }
 }

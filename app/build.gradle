@@ -41,6 +41,8 @@ android {
 dependencies {
     def room_version = "2.2.6"
 
+    implementation 'com.koushikdutta.ion:ion:3.1.0'
+
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
@@ -78,6 +80,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
     implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation "com.github.skydoves:transformationlayout:1.0.9"
+    implementation "com.github.skydoves:rainbow:1.0.4"
+    implementation "com.github.skydoves:progressview:1.1.1"
 
 
 }

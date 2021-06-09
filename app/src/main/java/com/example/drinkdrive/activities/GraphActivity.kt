@@ -1,12 +1,14 @@
 package com.example.drinkdrive.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.Room
 import com.example.drinkdrive.R
 import com.example.drinkdrive.database.AlcoholDrunk
 import com.example.drinkdrive.database.AppDatabase
@@ -18,19 +20,28 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_parameters.*
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.*
 
 
 class GraphActivity : AppCompatActivity() {
 
     private lateinit var lineChart : LineChart
     private lateinit var pieChart : PieChart
-    private val dataline= mutableListOf<Entry>()
+    private var dataline= mutableListOf<Entry>()
     private val datapie= mutableListOf<PieEntry>()
-    private val date =  mutableListOf<String>()
+    private var date =  mutableListOf<String>()
     private var wypite =  mutableListOf<Float>()
     private var typeOfAlco = mutableListOf<String>()
     private var typeOfAlcoPopulariti = mutableListOf<Float>()
+    private var isModified : Boolean = false
+    private lateinit var database: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,16 +49,18 @@ class GraphActivity : AppCompatActivity() {
 
         // take a data from intent
         val items = intent.getParcelableArrayListExtra<AlcoholDrunk>("data")
-
         // group by date and capacity
+
         for (item in items!!) {
             if (item.data.substring(0, 11) !in date) {
                 date.add(item.data.substring(0, 11))
-                wypite.add(item.capacity)
+                wypite.add(item.capacity*item.percent_number/100)
             } else {
                 val x = date.lastIndexOf(item.data.substring(0, 11))
-                wypite[x] += item.capacity
+                wypite[x] += item.capacity*item.percent_number/100
             }
+
+
 
             if (item.alcohol_name !in typeOfAlco) {
                 typeOfAlco.add(item.alcohol_name)
@@ -56,6 +69,18 @@ class GraphActivity : AppCompatActivity() {
                 val x = typeOfAlco.lastIndexOf(item.alcohol_name)
                 typeOfAlcoPopulariti[x] += 1f
             }
+
+        }
+
+        if (date.size == 1) {
+            val newdate = mutableListOf<String>()
+            val todayday = date[0].substring(8, 10).toInt()
+            val todaymonth = date[0].substring(5, 7)
+            newdate.add((todayday - 1).toString() + "-" + todaymonth)
+            newdate.add((todayday).toString() + "-" + todaymonth)
+            newdate.add((todayday + 1).toString() + "-" + todaymonth)
+            date = newdate
+            isModified = true
         }
 
         // find the charts
@@ -70,7 +95,7 @@ class GraphActivity : AppCompatActivity() {
         }
         i = 0
         for (w in wypite) {
-            dataline.add(Entry(i.toFloat(), wypite[i]))
+            dataline.add(Entry(i.toFloat(), wypite[wypite.size-1-i]))
             i++
         }
 
@@ -117,14 +142,15 @@ class GraphActivity : AppCompatActivity() {
         // make visible right chart
         pieChart.visibility = View.INVISIBLE
         lineChart.visibility = View.VISIBLE
-        wypite.reverse()
 
         // axis formatter
         val formatter: ValueFormatter =
                 object : ValueFormatter() {
                     override fun getAxisLabel(value: Float, axis: AxisBase): String {
-                        return "nie dziala dla jednego dnia"
-                        //return date.get(date.size - 1 - value.toInt())
+                        if (isModified) {
+                            return date[(value + 1).toInt()]
+                        }
+                        return date[date.size - 1 - value.toInt()].substring(5)
                     }
                 }
         val xAxis = lineChart.xAxis

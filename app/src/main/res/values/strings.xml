@@ -1,19 +1,20 @@
 <resources>
     <string name="app_name">Drink&amp;Drive</string>
-    <string name="Option1">Ustaw parametry</string>
-    <string name="Option2">Ile mogę wypić?</string>
-    <string name="Option3">Dodaj alkohol</string>
-    <string name="Option4">Historia</string>
-    <string name="Option5">Ustawienia</string>
+    <string name="Option1">Set parameters</string>
+    <string name="Option2">How much can I drink?</string>
+    <string name="Option3">History</string>
+    <string name="Option4">Settings</string>
+    <string name="Option5">Suggest a coctail</string>
+    <string name="Option6">Log out</string>
     <string-array name="alcohols">
-        <item>PIWO</item>
-        <item>WINO</item>
-        <item>WÓDKA</item>
+        <item>BEER</item>
+        <item>WINE</item>
+        <item>VODKA</item>
         <item>GIN</item>
-        <item>ABSYNT</item>
+        <item>ABSINTH</item>
         <item>WHISKY</item>
-        <item>LIKIER</item>
-        <item>WÓDKA SMAKOWA</item>
+        <item>LIQUEUR</item>
+        <item>FLAVORED VODKA</item>
         <item>RUM</item>
         <item>TEQUILA</item>
     </string-array>
@@ -22,21 +23,21 @@
         <item>https://rafa-wino.pl/1337-thickbox_default/kieliszek-do-czerwonego-wina-duet-komplet-2-szt.jpg</item>
         <item>https://res.cloudinary.com/dj484tw6k/image/upload/v1513168636/be/992.jpg</item>
         <item>https://alkohol-online.pl/1752-large_default/gin-lubuski-700ml.jpg</item>
-        <item>https://www.sztukawina.pl/image/cache/data/products/Absinth_Absynt_C_520130f41e370-228x350.jpg</item>
+        <item>https://smaczajama.pl/userdata/public/gfx/17779/absinthe-czech-1011390-s383.jpg</item>
         <item>https://alkohol-online.pl/2896-large_default/grants-700ml.jpg</item>
         <item>https://darwina.pl/33187-large_default/jagermeister-350ml.jpg</item>
-        <item>https://image.ceneostatic.pl/data/products/33117944/i-soplica-malinowa-wodka-smakowa-500ml.jpg</item>
+        <item>https://domalkoholi.pl/userdata/public/gfx/860/sopliczka1.jpg</item>
         <item>https://darwina.pl/36552-large_default/rum-stock.jpg</item>
-        <item>https://domalkoholi.pl/userdata/public/gfx/856/tekila-silver-1.jpg</item>
+        <item>https://alkohol-online.pl/1550-thickbox_default/sierra-silver-700ml.jpg</item>
     </string-array>
     <string-array name="sortStyle">
-        <item>Data</item>
-        <item>Alkohol</item>
-        <item>Ilość</item>
-        <item>Procenty</item>
+        <item>Date</item>
+        <item>Alcohol</item>
+        <item>Capacity</item>
+        <item>Percent</item>
     </string-array>
     <string-array name="graphType">
-        <item>Spożycie alkoholu w ostatnich dniach</item>
-        <item>Ulubiony trunek</item>
+        <item>Consumption of alcohol due to days</item>
+        <item>Favourite drink</item>
     </string-array>
 </resources>

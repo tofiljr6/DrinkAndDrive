@@ -1,6 +1,7 @@
 package com.example.drinkdrive.activities
 
 import android.content.Context
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -71,6 +72,9 @@ class ParametersActivity : AppCompatActivity() {
                 female.isChecked=true
             }
         }
+
+        spinnerHeight.setBackgroundColor(Color.WHITE)
+        spinnerWeight.setBackgroundColor(Color.WHITE)
     }
 
     fun confirm(view: View) {

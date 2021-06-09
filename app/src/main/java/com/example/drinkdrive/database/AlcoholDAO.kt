@@ -18,8 +18,8 @@ interface AlcoholDAO{
     @Query("select name from alcohols limit 1")
     fun getFirstName():String
 
-    @Query("delete from alcohols")
-    fun deleteAll()
+    @Query("delete from alcohols where userId=:userId")
+    fun deleteAll(userId: String)
 
     @Delete
     fun delete(alcohol: Alcohol)

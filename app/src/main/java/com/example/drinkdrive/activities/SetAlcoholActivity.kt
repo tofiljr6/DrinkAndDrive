@@ -8,6 +8,7 @@ import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.room.Room
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.drinkdrive.R
 import com.example.drinkdrive.database.AppDatabase
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
@@ -51,6 +52,8 @@ class SetAlcoholActivity : AppCompatActivity() {
         textView.text=item!!.name
         Glide.with(this)
             .load(item.photoURL)
+            .fitCenter()
+            .transform(RoundedCorners(100))
             .into(imageView)
         capacity.setText(item.capacity.toString())
         spinnerPercent.setSelection((item.percent.toInt()))
@@ -68,7 +71,7 @@ class SetAlcoholActivity : AppCompatActivity() {
             GlobalScope.launch {
                 var currentDateTime = LocalDateTime.now()
                 val user = Firebase.auth.currentUser!!.uid
-                database.alcoholDrunkDAO().insert(item.name,capacityText,percent,currentDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),user.toString())
+                database.alcoholDrunkDAO().insert(item.name,percent,capacityText,currentDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),user.toString())
             }
             MotionToast.createColorToast(this,"Dodano","Wypiles: "+item.name,
                 MotionToast.TOAST_SUCCESS,

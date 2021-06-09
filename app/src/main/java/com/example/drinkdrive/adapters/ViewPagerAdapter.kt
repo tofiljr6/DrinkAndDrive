@@ -1,20 +1,20 @@
 package com.example.mygallery.Adapter.com.example.drinkdrive.adapters
 
 import android.app.Activity
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.drinkdrive.R
-import com.example.drinkdrive.activities.SetAlcoholActivity
+import com.example.drinkdrive.activities.MainActivity
 import com.example.drinkdrive.adapters.ViewPagerClick
 import com.example.drinkdrive.database.AppDatabase
 import com.google.firebase.auth.ktx.auth
@@ -26,15 +26,17 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class ViewPagerAdapter(private val data:List<Alcohol>,private val database: AppDatabase,private val click:ViewPagerClick):RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
+class ViewPagerAdapter(private val data:List<Alcohol>,private val database: AppDatabase,private val click:ViewPagerClick, private val mainActivity: MainActivity):RecyclerView.Adapter<ViewPagerAdapter.ViewHolder>() {
     class ViewHolder(view: View):RecyclerView.ViewHolder(view){
         val photo:ImageView
         val percent:ProgressBar
         val percentNum:TextView
+        val capacity:TextView
         init{
             photo=view.findViewById(R.id.alcoholImage);
             percent=view.findViewById(R.id.alcoholPercent)
             percentNum=view.findViewById(R.id.alcoholPercentNum)
+            capacity=view.findViewById(R.id.capacity)
         }
     }
 
@@ -54,11 +56,12 @@ class ViewPagerAdapter(private val data:List<Alcohol>,private val database: AppD
                 database.alcoholDrunkDAO().insert(item.name,item.percent,item.capacity.toFloat(),currentDateTime.format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),user.toString())
             }
-            MotionToast.createColorToast(holder.itemView.context as Activity,"Dodano","Wypiles: "+item.name,
+            MotionToast.createColorToast(holder.itemView.context as Activity,"Added","You drunk: "+item.name,
                     MotionToast.TOAST_SUCCESS,
                     MotionToast.GRAVITY_BOTTOM,
                     MotionToast.SHORT_DURATION,
                     ResourcesCompat.getFont(holder.itemView.context,R.font.helvetica_regular))
+            mainActivity.promile() // refresh car time and per mile in the glass
             true
         }
         holder.itemView.setOnLongClickListener {
@@ -67,9 +70,13 @@ class ViewPagerAdapter(private val data:List<Alcohol>,private val database: AppD
         }
        Glide.with(holder.itemView)
            .load(item.photoURL)
+           .override(400,400)
+           .fitCenter()
+           .transform(RoundedCorners(100))
            .into(holder.photo)
         holder.percent.progress = item.percent.toInt()
-        holder.percentNum.text=item.percent.toString()
+        holder.percentNum.text=item.percent.toString()+" %"
+        holder.capacity.text=item.capacity.toInt().toString()+" ml"
     }
 
     override fun getItemCount(): Int {

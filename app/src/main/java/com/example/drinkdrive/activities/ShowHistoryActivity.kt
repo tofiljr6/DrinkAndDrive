@@ -50,7 +50,6 @@ class ShowHistoryActivity : AppCompatActivity() {
         val recycler=findViewById<RecyclerView>(R.id.recyclerView)
         recycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         recycler.adapter=adapter
         val swiper=object: SwipeToDelete(this,0, ItemTouchHelper.RIGHT){
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -83,7 +82,7 @@ class ShowHistoryActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                if(button.isChecked) {
+                if(!button.isChecked) {
                     when (position) {
                         0 -> items.sortBy {  it.data }
                         1 -> items.sortBy { it.alcohol_name }
@@ -107,7 +106,7 @@ class ShowHistoryActivity : AppCompatActivity() {
             }
         }
         button.setOnClickListener{
-            if(button.isChecked) {
+            if(!button.isChecked) {
                 when (spinner.selectedItemPosition) {
                     0 -> items.sortBy {  it.data }
                     1 -> items.sortBy { it.alcohol_name }
