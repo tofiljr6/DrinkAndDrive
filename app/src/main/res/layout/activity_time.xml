@@ -1,73 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/col2">
 
-    <RadioGroup
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView_activityTime"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="49dp"
-        android:layout_marginEnd="273dp">
-
-        <RadioButton
-            android:id="@+id/radioButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="78dp"
-            android:text="RadioButton" />
-
-        <RadioButton
-            android:id="@+id/radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="86dp"
-            android:text="RadioButton" />
-    </RadioGroup>
 
     <TextView
         android:id="@+id/textView_activityTime"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:layout_marginTop="48dp"
+        android:text="I to want drive:"
+        android:textSize="30sp"
+        android:fontFamily="@font/helveticabold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/teal_700"/>
 
-        android:layout_marginTop="83dp"
-        android:layout_marginBottom="30dp"
+    <RadioGroup
+        android:id="@+id/RadioGroup_activityTime"
+        android:layout_width="wrap_content"
+        android:layout_height="73dp"
+        android:layout_below="@id/textView_activityTime"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="52dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_activityTime">
 
-        android:text="Chcę jechać:"
+        <RadioButton
+            android:id="@+id/today_activityTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-        android:textSize="30sp" />
+            android:text="Today"
+            android:textSize="25sp" />
+
+        <RadioButton
+            android:id="@+id/tomorrow_activityTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="88dp"
+            android:text="Tommorow"
+            android:textSize="25sp" />
+    </RadioGroup>
 
     <Button
-        android:id="@+id/buttonTime"
+        android:id="@+id/selectHour_activityTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/group"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="-148dp"
-        android:layout_marginEnd="73dp"
-        android:text="Time"/>
+        android:layout_below="@id/RadioGroup_activityTime"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/set_button"
+        android:text="Select hour"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RadioGroup_activityTime" />
 
     <TextView
-        android:id="@+id/instructions"
+        android:id="@+id/selectedHour_activityDrive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonTime"
-        android:layout_marginTop="317dp"
-        android:text="TextView" />
+
+        android:layout_below="@id/selectHour_activityTime"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:text=""
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectHour_activityTime" />
 
     <Button
-        android:id="@+id/button7"
+        android:id="@+id/calculateButton_activityTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonTime"
-        android:layout_marginTop="195dp"
-        android:onClick="confirm"
-        android:text="CONF" />
+        android:layout_below="@id/RadioGroup_activityTime"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/set_button"
+        android:text="Calculate!"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectedHour_activityDrive"
+        app:layout_constraintVertical_bias="0.112" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/resultTextView_activityTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/teal_700"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calculateButton_activityTime"
+        app:layout_constraintVertical_bias="0.51" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
