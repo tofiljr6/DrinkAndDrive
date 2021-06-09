@@ -346,21 +346,21 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 // autko
                 var colorcarhours = endOfDrunk.minusHours(LocalTime.parse(LocalTime.now().toString()).hour.toLong()).hour
 
+                if (doses >= 24) { // przepijemy jeden dzień xd
+                    colorcarhours += 24
+                }
+
                 if (colorcarhours > 0) {
                     carTextView.text = endOfDrunk.toString()
                 } else {
                     carTextView.text = "GO"
                 }
 
-                if (doses >= 24) { // przepijemy jeden dzień xd
-                    colorcarhours += 24
-                }
-
                 when {
-                    colorcarhours <= 0 -> currentcarimg.setImageResource(carsIMG[0])
-                    colorcarhours <= 5 -> currentcarimg.setImageResource(carsIMG[1])
-                    colorcarhours <= 9 -> currentcarimg.setImageResource(carsIMG[2])
-                    else -> currentcarimg.setImageResource(carsIMG[3])
+                    p <= 0.2 -> currentcarimg.setImageResource(carsIMG[0]) // zdolny do jazdy
+                    p <= 1.5 -> currentcarimg.setImageResource(carsIMG[1]) // zaburzenie równangi, błedy w logicznym myśleniu
+                    p <= 3.0 -> currentcarimg.setImageResource(carsIMG[2]) // zaburzenia mowy
+                    else -> currentcarimg.setImageResource(carsIMG[3])     // zatrucie, śmierć
                 }
 
                 val final = endOfDrunk
@@ -393,18 +393,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
 
     private fun updateDoses(l : AlcoholDrunk, doses: Int): Int {
         var d = doses
-        when(l.alcohol_name) {
-            "BEER"           -> d += ((l.capacity / 250) * (l.percent_number / 5 )).toInt()
-            "WINE"           -> d += ((l.capacity / 100) * (l.percent_number / 12)).toInt()
-            "VODKA"          -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
-            "ABSINTH"        -> d += ((l.capacity / 20 ) * (l.percent_number / 20)).toInt()
-            "GIN"            -> d += ((l.capacity / 50 ) * (l.percent_number / 35)).toInt()
-            "WHISKY"         -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
-            "LIQUEUR"        -> d += ((l.capacity / 25 ) * (l.percent_number / 40)).toInt()
-            "FLAVORED VODKA" -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
-            "RUM"            -> d += ((l.capacity / 35 ) * (l.percent_number / 40)).toInt()
-            "TEQUILA"        -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
-        }
+        d += (l.capacity * l.percent_number / 1000.0).toInt()
         return d
     }
 }
