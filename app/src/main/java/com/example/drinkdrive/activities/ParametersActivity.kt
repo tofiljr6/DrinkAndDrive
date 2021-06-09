@@ -24,7 +24,6 @@ class ParametersActivity : AppCompatActivity() {
     private lateinit var spinnerHeight:Spinner
     private lateinit var spinnerWeight:Spinner
     private lateinit var spinnerCoutry:Spinner
-    private lateinit var editor: SharedPreferences.Editor
     private lateinit var shared: SharedPreferences
     private lateinit var male:RadioButton
     private lateinit var female:RadioButton
@@ -45,8 +44,8 @@ class ParametersActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.d("db_D&D", e.message.toString())
         }
-        shared = getSharedPreferences("country", Context.MODE_PRIVATE)
-        editor = shared.edit()
+       // shared = getSharedPreferences("country", Context.MODE_PRIVATE)
+       // editor = shared.edit()
         user=Firebase.auth.currentUser!!.uid
         exist=database.parameterDAO().getAll(user!!)
         spinnerHeight=findViewById(R.id.spinnerHeight)
@@ -71,7 +70,7 @@ class ParametersActivity : AppCompatActivity() {
         val countryAdapter = ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,
             resources.getStringArray(R.array.countryPromile))
         spinnerCoutry.adapter = countryAdapter
-        spinnerCoutry.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        /*spinnerCoutry.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
             }
@@ -94,12 +93,13 @@ class ParametersActivity : AppCompatActivity() {
                     8 -> editor.putFloat("country", 0.8f)
                     9 -> editor.putFloat("country", 0.9f)
                 }
-                editor.apply()
             }
-        }
+        }*/
         if(exist.size>0){
             spinnerHeight.setSelection(exist[0].height.toInt()-120)
             spinnerWeight.setSelection(exist[0].weight.toInt()-50)
+            spinnerCoutry.setSelection((exist[0].allowed*10).toInt())
+            Log.v("heh",exist[0].allowed.toString())
             if(exist[0].gender=="male"){
                 male.isChecked=true
             }
@@ -121,14 +121,15 @@ class ParametersActivity : AppCompatActivity() {
                         "male",
                         spinnerWeight.selectedItem.toString().toFloat(),
                         spinnerHeight.selectedItem.toString().toFloat(),
-                        Firebase.auth.currentUser!!.uid
+                        Firebase.auth.currentUser!!.uid,
+                        spinnerCoutry.selectedItem.toString().substring(0,3).toFloat()
                     )
                 }
                 else{
                     database.parameterDAO().set("male",
                         spinnerWeight.selectedItem.toString().toFloat(),
                         spinnerHeight.selectedItem.toString().toFloat(),
-                        user)
+                        user,  spinnerCoutry.selectedItem.toString().substring(0,3).toFloat())
                 }
             }
         }
@@ -139,18 +140,19 @@ class ParametersActivity : AppCompatActivity() {
                         "female",
                         spinnerWeight.selectedItem.toString().toFloat(),
                         spinnerHeight.selectedItem.toString().toFloat(),
-                        Firebase.auth.currentUser!!.uid
+                        Firebase.auth.currentUser!!.uid,  spinnerCoutry.selectedItem.toString().substring(0,3).toFloat()
                     )
                 }
                 else{
                     database.parameterDAO().set("female",
                         spinnerWeight.selectedItem.toString().toFloat(),
                         spinnerHeight.selectedItem.toString().toFloat(),
-                        user)
+                        user,  spinnerCoutry.selectedItem.toString().substring(0,3).toFloat())
+                    Log.v("heh",spinnerCoutry.selectedItem.toString().substring(0,3))
                 }
             }
         }
-        editor.commit()
+        //editor.commit()
         finish()
     }
 

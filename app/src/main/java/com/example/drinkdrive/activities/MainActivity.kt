@@ -64,8 +64,6 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             Log.d("db_D&D", e.message.toString())
         }
         shared=getSharedPreferences("prefs", Context.MODE_PRIVATE)
-        sharedPromile=getSharedPreferences("country", Context.MODE_PRIVATE)
-        editor = sharedPromile.edit()
         userId=shared.getString("user","noLogged")
         if(userId=="noLogged"){
             login()
@@ -363,7 +361,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                     carTextView.text = "GO"
                 }
 
-                val dopuszczonepromile = sharedPromile.getFloat("country", 0.2f)
+                val dopuszczonepromile = params[0].allowed
 
                 when {
                     p <= dopuszczonepromile -> currentcarimg.setImageResource(carsIMG[0])
