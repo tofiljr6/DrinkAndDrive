@@ -98,11 +98,17 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 .setAvailableProviders(providers)
                 .build(),
             RC_SIGN_IN)
+
     }
 
     override fun onResume() {
         super.onResume()
         promile()
+
+        val exist=database.parameterDAO().getAll(Firebase.auth.currentUser!!.uid)
+        if (exist.size == 0) {
+            setParameters()
+        }
     }
 
 
