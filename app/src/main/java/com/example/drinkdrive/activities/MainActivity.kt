@@ -415,7 +415,6 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             "TEQUILA"        -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
         }*/
         d+=(l.capacity*l.percent_number/1200).toInt()
-//        d += (l.capacity * l.percent_number / 1000.0).toInt()
         return d
     }
 }
