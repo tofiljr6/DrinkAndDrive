@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             login()
         }
         else{
-            title="User: ${Firebase.auth.currentUser!!.displayName}"
+            title="Hello, ${Firebase.auth.currentUser!!.displayName}"
             items = database.alcoholDAO().getAll(userId!!)
             adapter= ViewPagerAdapter(items,database,this, this)
             val viewPager=findViewById<ViewPager2>(R.id.viewPager)

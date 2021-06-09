@@ -31,6 +31,8 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        title="Settings"
         shared = getSharedPreferences("prefs", Context.MODE_PRIVATE)
         findViewById<SwitchCompat>(R.id.notify).isChecked =
             shared.getString("notifications", "false") == "true"
@@ -121,6 +123,11 @@ class SettingsActivity : AppCompatActivity() {
             "CANCEL"
         ) { _, _ -> }
         builder.show()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
 

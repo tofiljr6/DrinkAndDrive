@@ -46,6 +46,8 @@ class GraphActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        title="Charts"
 
         // take a data from intent
         val items = intent.getParcelableArrayListExtra<AlcoholDrunk>("data")
@@ -121,6 +123,11 @@ class GraphActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     fun pieChartDraw() {

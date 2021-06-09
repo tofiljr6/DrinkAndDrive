@@ -32,6 +32,8 @@ class AddAlcoholActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_alcohol)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        title="Add alcohol"
          val percentArray= arrayListOf<Int>()
         for(i in 0 .. 100){
             percentArray.add(i)
@@ -43,6 +45,11 @@ class AddAlcoholActivity : AppCompatActivity() {
         name=findViewById(R.id.alcoholName)
         capacity=findViewById(R.id.alcoholCapacity)
         image=findViewById(R.id.imageView)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     fun confirm(view: View) {

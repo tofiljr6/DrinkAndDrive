@@ -27,6 +27,8 @@ class SetAlcoholActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set_alcohol)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        title="Set alcohol parameters"
 
         try {
             database = Room.databaseBuilder(
@@ -85,5 +87,9 @@ class SetAlcoholActivity : AppCompatActivity() {
             finish()
             true
         }
+    }
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 }

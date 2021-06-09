@@ -34,6 +34,8 @@ class ParametersActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parameters)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        title="Set parameters"
         try {
             database = Room.databaseBuilder(
                 this,
@@ -110,6 +112,12 @@ class ParametersActivity : AppCompatActivity() {
         spinnerHeight.setBackgroundColor(Color.WHITE)
         spinnerWeight.setBackgroundColor(Color.WHITE)
         spinnerCoutry.setBackgroundColor(Color.WHITE)
+    }
+
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     fun confirm(view: View) {

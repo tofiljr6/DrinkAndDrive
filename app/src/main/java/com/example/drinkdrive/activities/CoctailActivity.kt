@@ -24,6 +24,8 @@ class CoctailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_coctail)
+        title="Recommend coctail"
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         imageView=findViewById(R.id.coctailImg)
         findViewById<Button>(R.id.button12).setOnClickListener {
             generate()
@@ -31,6 +33,11 @@ class CoctailActivity : AppCompatActivity() {
         }
         generate()
 
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
     }
 
     fun processData(data:String){
