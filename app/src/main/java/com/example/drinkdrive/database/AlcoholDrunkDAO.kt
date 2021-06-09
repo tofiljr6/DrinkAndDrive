@@ -33,7 +33,8 @@ interface AlcoholDrunkDAO {
     @Query("select data_of_consumption from alcohol_drunk group by substr(data_of_consumption, 0, 11)")
     fun getDates() : MutableList<String>
 
-    @Query("select * from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours')")
+//    @Query("select * from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours') order by id desc")
+    @Query("select * from alcohol_drunk where data_of_consumption >= date('now') order by id desc")
     fun getLastDrunk() : MutableList<AlcoholDrunk>
 
     @Query("select substr(data_of_consumption, 12) from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours')")

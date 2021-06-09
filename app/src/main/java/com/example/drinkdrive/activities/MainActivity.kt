@@ -18,6 +18,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.drinkdrive.R
 import com.example.drinkdrive.adapters.NotificationAdapter
 import com.example.drinkdrive.adapters.ViewPagerClick
+import com.example.drinkdrive.database.AlcoholDrunk
+import com.example.drinkdrive.database.AlcoholDrunkDAO
 import com.example.drinkdrive.database.AppDatabase
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.ViewPagerAdapter
@@ -292,64 +294,63 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 burnalco = 10
             }
 
-            var days=0
+            var doses = 0 // dawki czystego alkoholu
             val last = database.alcoholDrunkDAO().getLastDrunk()
             if (last.size != 0) {
-                // czas od którego będziemy liczyć promile
-                var startdata = LocalDate.parse(last[0].data.substring(0, 10))
-                var starttime = LocalTime.parse(last[0].data.substring(11, 19))
-                var ldatacurrent = LocalDate.parse(last[0].data.substring(0, 10))
-                var ltimecurrent = LocalTime.parse(last[0].data.substring(11, 19))
-                val hourstoStay = LocalTime.parse("01:00:00")
+                // od której zaczałem pić
+                var firstl = last[0]
+                var firstTime = LocalTime.parse(firstl.data.substring(11, 19))
+                doses = updateDoses(firstl, doses)
 
-                var doses = 0
+                var hoursToStay = LocalTime.parse("00:00:00") // .plusHours(doses.toLong()) // jedna dawska spala się godzinę
 
                 for (l in last) {
-                    ldatacurrent = LocalDate.parse(l.data.substring(0, 10))
-                    ltimecurrent = LocalTime.parse(l.data.substring(11, 19))
-                            if (starttime.plusHours(hourstoStay.hour.toLong())
-                                            .isBefore(ltimecurrent) || startdata != ldatacurrent
-                            ) {
-                                starttime = ltimecurrent
-                                startdata = ldatacurrent
-                                doses = (l.capacity *l.percent_number/100).toInt()
-                            } else {
-                                val dose = (l.capacity * l.percent_number/100).toInt()
-                                doses += dose
-                            }
-                        }
-                // kieliszek
-                val deltapicia = LocalTime.parse(LocalTime.now().toString()).minusHours(starttime.hour.toLong())
-                val mgofBurnAlco = deltapicia.hour * burnalco
-                val mgofConcuptedAlco = doses * 0.8
-
-                val p = (mgofConcuptedAlco - mgofBurnAlco) / (k * w)
-                val df = DecimalFormat("#.##")
-                df.roundingMode = RoundingMode.HALF_DOWN
-                v.text = df.format(p).toString()
-
-                // autko
-                var readytogo = LocalTime.parse("00:00:00")
-                readytogo = readytogo.plusHours(doses.toLong())
-                val final = starttime.plusHours(readytogo.hour.toLong())
-
-                carTextView.text = final.toString()
-
-                // autko - kolor
-                when {
-                    readytogo.hour <= 0 -> {
-                        currentcarimg.setImageResource(carsIMG[0])
-                    }
-                    readytogo.hour < 4 -> {
-                        currentcarimg.setImageResource(carsIMG[1])
-                    }
-                    readytogo.hour < 9 -> {
-                        currentcarimg.setImageResource(carsIMG[2])
-                    }
-                    else -> {
-                        currentcarimg.setImageResource(carsIMG[3])
+                    val currentTime = LocalTime.parse(l.data.substring(11, 19))
+                    if (currentTime.minusHours(hoursToStay.hour.toLong()).isBefore(firstTime)) {
+                        doses = updateDoses(l, doses)
                     }
                 }
+
+                hoursToStay = hoursToStay.plusHours(doses.toLong())
+                val endOfDrunk = firstTime.plusHours(hoursToStay.hour.toLong())
+
+                // teraz pod zmienną,
+                // end of drunk mamy o której godzinie wytrzeźwiejemy
+                // pod zmienną doses ile spożyliśmy dawej czystego alkoholu
+                // pod zmienna first kiedy zaczeliśmy pić
+
+                // kieliszek
+                val deltapicia = LocalTime.parse(LocalTime.now().toString()).minusHours(firstTime.hour.toLong())
+                val mgofBurnAlco = deltapicia.hour * burnalco
+                val mgofConcuptedAlco = doses * 10 // 1 dawka = 10 g czystego alkoholu
+                val p = (mgofConcuptedAlco - mgofBurnAlco)/(k * w)
+                val df = DecimalFormat("#.##")
+                df.roundingMode = RoundingMode.HALF_DOWN
+
+                if (p > 0) {
+                    v.text = df.format(p).toString()
+                } else {
+                    v.text = "0.0"
+                }
+
+                // autko
+                val colorcarhours = endOfDrunk.minusHours(LocalTime.parse(LocalTime.now().toString()).hour.toLong()).hour
+
+                if (colorcarhours > 0) {
+                    carTextView.text = endOfDrunk.toString()
+                } else {
+                    carTextView.text = "GO"
+                }
+
+
+                when {
+                    colorcarhours <= 0 -> currentcarimg.setImageResource(carsIMG[0])
+                    colorcarhours <= 5 -> currentcarimg.setImageResource(carsIMG[1])
+                    colorcarhours <= 9 -> currentcarimg.setImageResource(carsIMG[2])
+                    else -> currentcarimg.setImageResource(carsIMG[3])
+                }
+
+                val final = endOfDrunk
 
                 // ustawianie powiadomienie
                 val finalHour = final.hour * 60 * 60
@@ -375,5 +376,22 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             carTextView.text = "USTAW PARAMETRY"
             v.text = "USTAW PARAMETRY"
         }
+    }
+
+    private fun updateDoses(l : AlcoholDrunk, doses: Int): Int {
+        var d = doses
+        when(l.alcohol_name) {
+            "BEER"           -> d += ((l.capacity / 250) * (l.percent_number / 5 )).toInt()
+            "WINE"           -> d += ((l.capacity / 100) * (l.percent_number / 12)).toInt()
+            "VODKA"          -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+            "ABSINTH"        -> d += ((l.capacity / 20 ) * (l.percent_number / 20)).toInt()
+            "GIN"            -> d += ((l.capacity / 50 ) * (l.percent_number / 35)).toInt()
+            "WHISKY"         -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+            "LIQUEUR"        -> d += ((l.capacity / 25 ) * (l.percent_number / 40)).toInt()
+            "FLAVORED VODKA" -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+            "RUM"            -> d += ((l.capacity / 35 ) * (l.percent_number / 40)).toInt()
+            "TEQUILA"        -> d += ((l.capacity / 30 ) * (l.percent_number / 40)).toInt()
+        }
+        return d
     }
 }

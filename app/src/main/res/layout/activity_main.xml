@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:padding="50px"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/car2" />
+                    android:src="@drawable/carred2" />
 
                 <TextView
                     android:id="@+id/promilleTextView"
