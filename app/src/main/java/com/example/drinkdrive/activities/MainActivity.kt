@@ -80,12 +80,16 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         var names = resources.getStringArray(R.array.alcohols)
         var images = resources.getStringArray(R.array.images)
         val firstName = database.alcoholDAO().getFirstName()
-        if (firstName != names[0]) {
-            for (i in 0 until names.size) {
-                val alcohol = Alcohol(i + 1, names[i], images[i], capacity[i], percent[i], null)
-                database.alcoholDAO().insertAll(alcohol)
+
+        try {
+            if (firstName != names[0]) {
+                for (i in 0 until names.size) {
+                    val alcohol = Alcohol(i + 1, names[i], images[i], capacity[i], percent[i], null)
+                    database.alcoholDAO().insertAll(alcohol)
+                }
             }
-        }
+        } catch (ignored : android.database.sqlite.SQLiteConstraintException) {}
+
         createNotificationChannel()
         promile()
     }
@@ -100,11 +104,17 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 .setAvailableProviders(providers)
                 .build(),
             RC_SIGN_IN)
+
     }
 
     override fun onResume() {
         super.onResume()
         promile()
+
+        val exist=database.parameterDAO().getAll(Firebase.auth.currentUser!!.uid)
+        if (exist.size == 0) {
+            setParameters()
+        }
     }
 
 
