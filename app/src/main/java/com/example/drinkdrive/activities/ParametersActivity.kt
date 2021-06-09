@@ -107,8 +107,8 @@ class ParametersActivity : AppCompatActivity() {
                 female.isChecked=true
             }
         }
-        findViewById<Spinner>(R.id.spinnerHeight).setBackgroundColor(Color.WHITE)
-        findViewById<Spinner>(R.id.spinnerWeight).setBackgroundColor(Color.WHITE)
+        spinnerHeight.setBackgroundColor(Color.WHITE)
+        spinnerWeight.setBackgroundColor(Color.WHITE)
         findViewById<Spinner>(R.id.spinnerCoutry).setBackgroundColor(Color.WHITE)
     }
 
