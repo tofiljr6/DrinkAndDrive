@@ -269,7 +269,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         val channel = NotificationChannel("notification", name, importance).apply {
             description = descriptionText
         }
-        // Register the channel with the system
+
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
