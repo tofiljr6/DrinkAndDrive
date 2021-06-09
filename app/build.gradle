@@ -83,6 +83,7 @@ dependencies {
     implementation "com.github.skydoves:transformationlayout:1.0.9"
     implementation "com.github.skydoves:rainbow:1.0.4"
     implementation "com.github.skydoves:progressview:1.1.1"
+    implementation 'com.getbase:floatingactionbutton:1.10.1'
 
 
 }
