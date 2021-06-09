@@ -10,7 +10,7 @@ import com.example.drinkdrive.R
 class NotificationAdapter : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val builder = NotificationCompat.Builder(context!!, "notification")
-            .setSmallIcon(R.drawable.car0)
+            .setSmallIcon(R.drawable.notification)
             .setContentTitle("You can drive now")
             .setContentText("Concentration of alcohol in your body has dropped to 0‰")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

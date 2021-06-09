@@ -370,8 +370,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 val nowMinute = LocalTime.now().minute * 60
 
 
-                createNotification((finalMinute + finalHour + final.second) -
-                        (nowHour + nowMinute + LocalTime.now().second),
+                createNotification(10,
                         shared.getString("notifications", "false")!!)
 
 
