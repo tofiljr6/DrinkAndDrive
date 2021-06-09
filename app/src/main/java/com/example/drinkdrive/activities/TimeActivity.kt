@@ -17,6 +17,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import org.w3c.dom.Text
 import java.lang.Exception
+import java.math.BigDecimal
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -104,6 +105,11 @@ class TimeActivity: AppCompatActivity(),TimePickerDialog.OnTimeSetListener {
     private fun calculate(){
 
         val lastDrinks = database.alcoholDrunkDAO().getLastDrunk()
+        val all =  database.parameterDAO().getAll(user!!)
+        if(all.size == 0) {
+
+            result.text = "Wprowadz parametry zanim skorzystasz z tej opcji!"
+        }
         val parameters = database.parameterDAO().getAll(user!!)[0]
 
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -114,17 +120,26 @@ class TimeActivity: AppCompatActivity(),TimePickerDialog.OnTimeSetListener {
         val timeToEnd = getTimeFromWidget()
 
 
-        val hours = Duration.between(lastDrinkTime, timeToEnd).toMinutes().toFloat() / 60
+        val hours = Duration.between(lastDrinkTime, timeToEnd).toMinutes().toDouble() / 60
 
 
-        val howMuchCanIDrink = calculatorService.howMuchCanIDrink(0.03f, "MALE",80f, 8f)
+
+        val alcoholMass = calculatorService.howMuchCanIDrink(lastDrinks,parameters, hours)
+        //val howMuchCanIDrink = calculatorService.howMuchCanIDrink(0.03f, "MALE",80f, 8f)
         //val alcoholBloodContent = calculatorService.getBloodAlcoholContent(0.03f,"MALE",80f,2f)
 
 
+        val alcoholAmount = (calculatorService.getAlcohols(alcoholMass))
 
-        result.text = "$howMuchCanIDrink"
-
+        if(alcoholMass < 0.0 ){
+            result.text = "Nie możesz już pic nie zdążysz wytrzeżwieć!"
+        }else {
+            result.text =
+                "Możesz wypic jeszcze $alcoholMass gramow alkoholu to jest:\n$alcoholAmount"
+        }
     }
+
+
 
 
     private fun getTimeFromWidget(): LocalDateTime{
