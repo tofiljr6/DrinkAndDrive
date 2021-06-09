@@ -107,9 +107,9 @@ class ParametersActivity : AppCompatActivity() {
                 female.isChecked=true
             }
         }
-
         spinnerHeight.setBackgroundColor(Color.WHITE)
         spinnerWeight.setBackgroundColor(Color.WHITE)
+        spinnerCoutry.setBackgroundColor(Color.WHITE)
     }
 
     fun confirm(view: View) {
