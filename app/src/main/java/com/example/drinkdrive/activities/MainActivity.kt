@@ -45,6 +45,8 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     private lateinit var database:AppDatabase
     private val RC_SIGN_IN=125
     private lateinit var shared: SharedPreferences
+    private lateinit var sharedPromile: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
     var userId:String?=null
     private var carsIMG = arrayOf(R.drawable.cargreen2, R.drawable.caryellow2, R.drawable.carred2, R.drawable.carblack2)
 
@@ -62,6 +64,8 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             Log.d("db_D&D", e.message.toString())
         }
         shared=getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        sharedPromile=getSharedPreferences("country", Context.MODE_PRIVATE)
+        editor = sharedPromile.edit()
         userId=shared.getString("user","noLogged")
         if(userId=="noLogged"){
             login()
@@ -347,7 +351,11 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 }
 
                 // autko
-                val colorcarhours = endOfDrunk.minusHours(LocalTime.parse(LocalTime.now().toString()).hour.toLong()).hour
+                var colorcarhours = endOfDrunk.minusHours(LocalTime.parse(LocalTime.now().toString()).hour.toLong()).hour
+
+                if (doses >= 24) { // przepijemy jeden dzień xd
+                    colorcarhours += 24
+                }
 
                 if (colorcarhours > 0) {
                     carTextView.text = endOfDrunk.toString()
@@ -355,11 +363,12 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                     carTextView.text = "GO"
                 }
 
+                val dopuszczonepromile = sharedPromile.getFloat("country", 0.2f)
 
                 when {
-                    colorcarhours <= 0 -> currentcarimg.setImageResource(carsIMG[0])
-                    colorcarhours <= 5 -> currentcarimg.setImageResource(carsIMG[1])
-                    colorcarhours <= 9 -> currentcarimg.setImageResource(carsIMG[2])
+                    p <= dopuszczonepromile -> currentcarimg.setImageResource(carsIMG[0])
+                    p <= dopuszczonepromile + 0.5 -> currentcarimg.setImageResource(carsIMG[1])
+                    p <= dopuszczonepromile + 1 -> currentcarimg.setImageResource(carsIMG[2])
                     else -> currentcarimg.setImageResource(carsIMG[3])
                 }
 
