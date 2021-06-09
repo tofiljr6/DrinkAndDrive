@@ -11,12 +11,13 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/car0"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/car0_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DrinkDrive">
-        <activity android:name=".activities.CoctailActivity"></activity>
+        <activity android:name=".activities.CoctailActivity"
+            android:screenOrientation="portrait"></activity>
         <activity android:name=".activities.GraphActivity" />
 
         <service
@@ -28,8 +29,10 @@
             android:exported="false" />
 
         <activity android:name=".activities.PhotoActivity" />
-        <activity android:name=".activities.SetAlcoholActivity" />
-        <activity android:name=".activities.AddAlcoholActivity" />
+        <activity android:name=".activities.SetAlcoholActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AddAlcoholActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".activities.ParametersActivity" />
         <activity android:name=".activities.ShowHistoryActivity" />
         <activity android:name=".activities.TimeActivity" />

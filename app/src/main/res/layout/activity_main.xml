@@ -57,10 +57,11 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="50px"
+                    android:layout_width="wrap_content"
+                    android:layout_height="400dp"
+                    android:layout_gravity="center"
                     android:background="@android:color/transparent"
+                    android:padding="50px"
                     android:src="@drawable/carred2" />
 
                 <TextView
@@ -81,10 +82,11 @@
 
                 <ImageView
                     android:id="@+id/imageView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/glass2"
-                    android:padding="50px"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="400dp"
+                    android:layout_gravity="center"
+                    android:padding="50px"
+                    android:src="@drawable/glass2" />
 
                 <TextView
                     android:id="@+id/promilleTextView2"

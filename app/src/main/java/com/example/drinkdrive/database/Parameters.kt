@@ -11,5 +11,6 @@ data class Parameters(
     @ColumnInfo(name="gender") var gender:String,
     @ColumnInfo(name="weight") var weight:Float,
     @ColumnInfo(name="height")var height:Float,
+    @ColumnInfo(name="allowed") var allowed:Float,
     @ColumnInfo(name="userId") var userId:String
 )

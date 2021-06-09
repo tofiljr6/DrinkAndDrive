@@ -11,7 +11,7 @@
         android:id="@+id/height"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Wzrost:"
+        android:text="Height:"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,7 +24,7 @@
         android:id="@+id/weight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Masa:"
+        android:text="Wieght:"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,7 +37,7 @@
         android:id="@+id/sex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Płeć:"
+        android:text="Sex:"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -103,7 +103,34 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toEndOf="@+id/weight"
         app:layout_constraintTop_toBottomOf="@+id/height"
-        app:layout_constraintVertical_bias="0.13" />
+        app:layout_constraintVertical_bias="0.131" />
+
+    <Spinner
+        android:id="@+id/spinnerCoutry"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+
+
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.583"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintVertical_bias="0.454" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Allowed promiles:"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.058"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sex"
+        app:layout_constraintVertical_bias="0.221" />
 </androidx.constraintlayout.widget.ConstraintLayout>
