@@ -109,7 +109,7 @@ class ParametersActivity : AppCompatActivity() {
         }
         spinnerHeight.setBackgroundColor(Color.WHITE)
         spinnerWeight.setBackgroundColor(Color.WHITE)
-        findViewById<Spinner>(R.id.spinnerCoutry).setBackgroundColor(Color.WHITE)
+        spinnerCoutry.setBackgroundColor(Color.WHITE)
     }
 
     fun confirm(view: View) {
