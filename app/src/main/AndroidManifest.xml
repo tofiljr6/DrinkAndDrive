@@ -18,7 +18,8 @@
         android:theme="@style/Theme.DrinkDrive">
         <activity android:name=".activities.CoctailActivity"
             android:screenOrientation="portrait"></activity>
-        <activity android:name=".activities.GraphActivity" />
+        <activity android:name=".activities.GraphActivity"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".service.MyService"
