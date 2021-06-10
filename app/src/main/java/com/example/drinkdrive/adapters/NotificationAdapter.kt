@@ -1,5 +1,6 @@
 package com.example.drinkdrive.adapters
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -20,6 +21,7 @@ class NotificationAdapter : BroadcastReceiver() {
 
         builder.contentIntent = PendingIntent.getActivity(context, 0,
             Intent(context, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
+        builder.flags = Notification.FLAG_AUTO_CANCEL
 
         val notificationManager = NotificationManagerCompat.from(context)
 
