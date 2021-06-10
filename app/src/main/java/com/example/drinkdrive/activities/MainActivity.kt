@@ -409,10 +409,9 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 val nowMinute = LocalTime.now().minute * 60
 
 
-                //createNotification((finalMinute + finalHour + final.second) -
-                //        (nowHour + nowMinute + LocalTime.now().second),
-                //        shared.getString("notifications", "false")!!)
-                createNotification(2, "true")
+                createNotification((finalMinute + finalHour + final.second) -
+                        (nowHour + nowMinute + LocalTime.now().second),
+                        shared.getString("notifications", "false")!!)
 
             } else {
                 currentcarimg.setImageResource(carsIMG[0])
