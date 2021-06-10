@@ -21,7 +21,6 @@ class NotificationAdapter : BroadcastReceiver() {
 
         builder.contentIntent = PendingIntent.getActivity(context, 0,
             Intent(context, MainActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT)
-        builder.flags = Notification.FLAG_AUTO_CANCEL
 
         val notificationManager = NotificationManagerCompat.from(context)
 

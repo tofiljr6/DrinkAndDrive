@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancelAll()
         setContentView(R.layout.activity_main)
         try {
             database = Room.databaseBuilder(
@@ -408,10 +409,10 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 val nowMinute = LocalTime.now().minute * 60
 
 
-                createNotification((finalMinute + finalHour + final.second) -
-                        (nowHour + nowMinute + LocalTime.now().second),
-                        shared.getString("notifications", "false")!!)
-
+                //createNotification((finalMinute + finalHour + final.second) -
+                //        (nowHour + nowMinute + LocalTime.now().second),
+                //        shared.getString("notifications", "false")!!)
+                createNotification(2, "true")
 
             } else {
                 currentcarimg.setImageResource(carsIMG[0])
