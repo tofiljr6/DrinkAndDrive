@@ -92,6 +92,28 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             }
         } catch (ignored : android.database.sqlite.SQLiteConstraintException) {}
 
+        //sztuczne dane
+        database.alcoholDrunkDAO().deleteAll(userId!!)
+        database.alcoholDrunkDAO().insert("RUM",35F,50F,"2021-06-02 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("VODKA",40F,100F,"2021-06-03 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("VODKA",40F,500F,"2021-06-03 14:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("BEER",5F,500F,"2021-06-04 13:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("FLAVOURED VODKA",35F,200F,"2021-06-04 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("LIQUER",20F,100F,"2021-06-04 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("BEER",100F,500F,"2021-06-04 14:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("BEER",5F,500F,"2021-06-04 13:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("GIN",5F,1600F,"2021-06-06 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("BEER",10F,600F,"2021-06-06 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("ABSINTH",80F,400F,"2021-06-06 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("LIQUER",20F,100F,"2021-06-07 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("BEER",10F,600F,"2021-06-07 14:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("BEER",11F,600F,"2021-06-07 13:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("TEQUILLA",5F,1600F,"2021-06-08 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("GIN",50F,1600F,"2021-06-08 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("BEER",10F,600F,"2021-06-08 10:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("BEER",7F,1500F,"2021-06-07 12:29:32",userId!!)
+        database.alcoholDrunkDAO().insert("WINE",15F,300F,"2021-06-08 21:22:32",userId!!)
+        database.alcoholDrunkDAO().insert("WHISKY",40F,500F,"2021-06-09 16:12:32",userId!!)
         createNotificationChannel()
         promile()
     }
@@ -310,7 +332,8 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
             }
 
             var doses = 0 // dawki czystego alkoholu
-            val last = database.alcoholDrunkDAO().getLastDrunk()
+            val last = database.alcoholDrunkDAO().getLastDrunk(userId!!)
+            Log.v("heh",last.toString())
             if (last.size != 0) {
                 // od której zaczałem pić
                 var firstl = last[0]
@@ -356,7 +379,12 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 }
 
                 if (colorcarhours > 0) {
-                    carTextView.text = endOfDrunk.toString()
+                    if(colorcarhours>24){
+                        carTextView.text="NEXT DAY $endOfDrunk"
+                    }
+                    else {
+                        carTextView.text = endOfDrunk.toString()
+                    }
                 } else {
                     carTextView.text = "GO"
                 }

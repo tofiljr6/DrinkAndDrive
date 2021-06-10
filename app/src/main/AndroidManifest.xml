@@ -36,7 +36,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".activities.ParametersActivity" />
         <activity android:name=".activities.ShowHistoryActivity" />
-        <activity android:name=".activities.TimeActivity" />
+        <activity android:name=".activities.TimeActivity"/>
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.MainActivity">
             <intent-filter>

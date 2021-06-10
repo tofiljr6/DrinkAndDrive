@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.core.content.res.ResourcesCompat
 import androidx.room.Room
 import com.example.drinkdrive.R
 import com.example.drinkdrive.database.AppDatabase
@@ -17,6 +18,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_parameters.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import www.sanju.motiontoast.MotionToast
 import java.lang.Exception
 
 class ParametersActivity : AppCompatActivity() {
@@ -141,7 +143,7 @@ class ParametersActivity : AppCompatActivity() {
                 }
             }
         }
-        else{
+        else if(female.isChecked){
             GlobalScope.launch {
                 if(exist.size==0) {
                     database.parameterDAO().insert(
@@ -159,6 +161,13 @@ class ParametersActivity : AppCompatActivity() {
                     Log.v("heh",spinnerCoutry.selectedItem.toString().substring(0,3))
                 }
             }
+        }
+        else{
+            MotionToast.createColorToast(this,"Fill all the details","Sex cannot be empty",
+                MotionToast.TOAST_WARNING,
+                MotionToast.GRAVITY_BOTTOM,
+                MotionToast.SHORT_DURATION,
+                ResourcesCompat.getFont(this,R.font.helvetica_regular))
         }
         //editor.commit()
         finish()

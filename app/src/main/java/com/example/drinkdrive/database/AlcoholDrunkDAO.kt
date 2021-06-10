@@ -27,20 +27,20 @@ interface AlcoholDrunkDAO {
     @Query("delete from alcohol_drunk where userId=:userId")
     fun deleteAll(userId: String)
 
-    @Query("select sum(capacity) from alcohol_drunk group by substr(data_of_consumption, 0, 11)")
-    fun getSums() : MutableList<Float>
+    @Query("select sum(capacity) from alcohol_drunk group by substr(data_of_consumption, 0, 11) and userId=:userId")
+    fun getSums(userId: String) : MutableList<Float>
 
-    @Query("select data_of_consumption from alcohol_drunk group by substr(data_of_consumption, 0, 11)")
-    fun getDates() : MutableList<String>
+    @Query("select data_of_consumption from alcohol_drunk group by substr(data_of_consumption, 0, 11) and userId=:userId")
+    fun getDates(userId: String) : MutableList<String>
 
-    @Query("select * from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours') order by id desc")
-//    @Query("select * from alcohol_drunk where data_of_consumption >= date('now') order by id desc")
-    fun getLastDrunk() : MutableList<AlcoholDrunk>
+   @Query("select * from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours') and userId=:userId order by id desc")
+    //@Query("select * from alcohol_drunk where data_of_consumption >= date('now') and userId=:userId order by id desc")
+    fun getLastDrunk(userId: String) : MutableList<AlcoholDrunk>
 
-    @Query("select substr(data_of_consumption, 12) from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours')")
-    fun getLastDrunkTime() : String
+    @Query("select substr(data_of_consumption, 12) from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours')  and userId=:userId")
+    fun getLastDrunkTime(userId: String) : String
 
-    @Query("select data_of_consumption from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours')")
-    fun getFullLastDrunkTime() : String
+    @Query("select data_of_consumption from alcohol_drunk where data_of_consumption >= datetime('now', '-24 hours') and userId=:userId")
+    fun getFullLastDrunkTime(userId: String) : String
 
 }

@@ -51,7 +51,7 @@ class ChartFragment : Fragment() {
         lineChart.visibility = View.INVISIBLE
 
         val pieDataSet = PieDataSet(datapie, "Favourite drinks")
-        pieDataSet.setAutomaticallyDisableSliceSpacing(true)
+       // pieDataSet.setAutomaticallyDisableSliceSpacing(true)
         pieDataSet.setColors(intArrayOf(R.color.col1, R.color.col2, R.color.col3,
             R.color.col4, R.color.col5, R.color.col6,
             R.color.col7, R.color.col8, R.color.col9, R.color.col10), view!!.context)
@@ -68,11 +68,14 @@ class ChartFragment : Fragment() {
 
 
         // axis formatter
-        val formatter: ValueFormatter =
+       val formatter: ValueFormatter =
             object : ValueFormatter() {
                 override fun getAxisLabel(value: Float, axis: AxisBase): String {
                     if (isModified) {
                         return date[(value + 1).toInt()]
+                    }
+                    if(date.size-1-value.toInt()<0){
+                        return ""
                     }
                     return date[date.size - 1 - value.toInt()].substring(5)
                 }
@@ -176,7 +179,6 @@ class ChartFragment : Fragment() {
                 }
 
             }
-        Log.v("heh",date.toString())
         // add values to data (pie and line)
         var i = 0
         for (t in typeOfAlco) {
@@ -185,7 +187,7 @@ class ChartFragment : Fragment() {
         }
         i = 0
         for (w in wypite) {
-            dataline.add(Entry(i.toFloat(), wypite[wypite.size-1-i]))
+            dataline.add(Entry(i.toFloat(), wypite[i]))
             i++
         }
         pieChart.description.text=""
@@ -200,6 +202,7 @@ class ChartFragment : Fragment() {
             date = newdate
             isModified = true
         }
+        date.reverse()
         if(selected=="l") {
             lineChartDraw()
         }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.room.Room
 import com.example.drinkdrive.R
 import com.example.drinkdrive.database.AlcoholDrunk
@@ -12,6 +13,7 @@ import com.example.drinkdrive.database.AppDatabase
 import com.example.drinkdrive.database.Parameters
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import www.sanju.motiontoast.MotionToast
 import java.lang.Exception
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -21,6 +23,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.contracts.ReturnsNotNull
 
 class TimeActivity: AppCompatActivity(),TimePickerDialog.OnTimeSetListener {
 
@@ -55,6 +58,8 @@ class TimeActivity: AppCompatActivity(),TimePickerDialog.OnTimeSetListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        title="When can i Drive?"
 
 
         radioGroup = findViewById(R.id.RadioGroup_activityTime)
@@ -86,6 +91,11 @@ class TimeActivity: AppCompatActivity(),TimePickerDialog.OnTimeSetListener {
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
 
     private fun getTime(){
         val cal = Calendar.getInstance()
@@ -113,29 +123,41 @@ class TimeActivity: AppCompatActivity(),TimePickerDialog.OnTimeSetListener {
 
     private fun calculate(){
 
-        val lastDrinks = database.alcoholDrunkDAO().getLastDrunk()
+        val lastDrinks = database.alcoholDrunkDAO().getLastDrunk(user!!)
         val all =  database.parameterDAO().getAll(user!!)
         if(all.size == 0) {
 
-            result.text = "Please enter parameters before you use this option"
+            MotionToast.createColorToast(this,"Fail","Please enter parameters",
+                MotionToast.TOAST_WARNING,
+                MotionToast.GRAVITY_BOTTOM,
+                MotionToast.SHORT_DURATION,
+                ResourcesCompat.getFont(this,R.font.helvetica_regular))
             return
         }else if(selectedHour.text == ""){
-            result.text = "Please enter hour"
+            MotionToast.createColorToast(this,"Fill all the details","Hour cannot be empty",
+                MotionToast.TOAST_WARNING,
+                MotionToast.GRAVITY_BOTTOM,
+                MotionToast.SHORT_DURATION,
+                ResourcesCompat.getFont(this,R.font.helvetica_regular))
             return
         }else if(!today.isChecked && !tomorrow.isChecked){
-            result.text = "Please select day"
+            MotionToast.createColorToast(this,"Fill all the details","Day cannot be empty",
+                MotionToast.TOAST_WARNING,
+                MotionToast.GRAVITY_BOTTOM,
+                MotionToast.SHORT_DURATION,
+                ResourcesCompat.getFont(this,R.font.helvetica_regular))
             return
         }
         val parameters = database.parameterDAO().getAll(user!!)[0]
 
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-        var lastDrinkTimeString = database.alcoholDrunkDAO().getFullLastDrunkTime()
+        var lastDrinkTimeString = database.alcoholDrunkDAO().getFullLastDrunkTime(user!!)
 
         val lastDrinkTime: LocalDateTime
         if(lastDrinkTimeString != null) {
             lastDrinkTime =
-                LocalDateTime.parse(database.alcoholDrunkDAO().getFullLastDrunkTime(), formatter)
+                LocalDateTime.parse(database.alcoholDrunkDAO().getFullLastDrunkTime(user!!), formatter)
         }else{
             lastDrinkTime = LocalDateTime.now()
         }
@@ -197,7 +219,7 @@ class TimeActivity: AppCompatActivity(),TimePickerDialog.OnTimeSetListener {
             for (l in lastDrinks) {
                 //divide by 100 to get percentage value from percent number
 
-                alcoholMass += l.capacity * alcDensity* l.percent_number  / 100
+                alcoholMass += l.capacity * alcDensity* l.percent_number  / 120
             }
         }
 
@@ -228,16 +250,14 @@ class TimeActivity: AppCompatActivity(),TimePickerDialog.OnTimeSetListener {
 
         if(gender.equals("MALE", true)){
 
-            return roundOffDecimal(((manAlcoholMetabolizeRate * time) * manRatio * weight) - alcoholMass)!!
+            return roundOffDecimal(2*((manAlcoholMetabolizeRate * time) * manRatio * weight) - alcoholMass)!!
         }else {
 
-            return roundOffDecimal((( womanAlcoholMetabolizeRate * time) * womanRatio * weight) - alcoholMass)!!
+            return roundOffDecimal(2*(( womanAlcoholMetabolizeRate * time) * womanRatio * weight) - alcoholMass)!!
         }
     }
 
     fun roundOffDecimal(number: Double): Double? {
-        val df = DecimalFormat("#.##")
-        df.roundingMode = RoundingMode.CEILING
-        return df.format(number).toDouble()
+        return Math.round(number * 1000.0) / 1000.0
     }
 }
