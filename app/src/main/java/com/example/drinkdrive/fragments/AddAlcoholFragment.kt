@@ -19,7 +19,9 @@ import androidx.core.net.toUri
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.drinkdrive.R
+import com.example.drinkdrive.activities.MainActivity
 import com.example.drinkdrive.activities.PhotoActivity
+import com.example.drinkdrive.database.AlcoholDrunk
 import com.example.drinkdrive.database.AppDatabase
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.ViewPagerAdapter
@@ -139,6 +141,7 @@ class AddAlcoholFragment : Fragment() {
             database.alcoholDAO().insert(name, uri, capacity, percent, userId)
             val id = database.alcoholDAO().getLastID()
             items.add(Alcohol(id, name, uri, capacity, percent, userId))
+            val frag=fragmentManager!!.findFragmentById(R.id.fragment) as MainFragment
             activity?.findViewById<ViewPager2>(R.id.viewPager)?.adapter?.notifyItemInserted(items.size - 1)
 
             this.name.setText("")
@@ -169,4 +172,5 @@ class AddAlcoholFragment : Fragment() {
             }
         }
     }
+
 }

@@ -24,6 +24,8 @@ import com.example.drinkdrive.adapters.ViewPagerClick
 import com.example.drinkdrive.database.AlcoholDrunk
 import com.example.drinkdrive.database.AlcoholDrunkDAO
 import com.example.drinkdrive.database.AppDatabase
+import com.example.drinkdrive.fragments.AddAlcoholFragment
+import com.example.drinkdrive.fragments.ChartFragment
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.Alcohol
 import com.example.mygallery.Adapter.com.example.drinkdrive.adapters.ViewPagerAdapter
 import com.firebase.ui.auth.AuthUI
@@ -31,6 +33,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import www.sanju.motiontoast.MotionToast
@@ -206,8 +209,9 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
     }
 
     fun addAlcohol(view: View) {
-        val myIntent = Intent(this, AddAlcoholActivity::class.java)
-        startActivityForResult(myIntent,123)
+            val myIntent = Intent(this, AddAlcoholActivity::class.java)
+            startActivityForResult(myIntent, 123)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -384,7 +388,7 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                     colorcarhours += 24
                 }
 
-                if (colorcarhours > 0) {
+                if (colorcarhours > 0 && p>0) {
                     if(colorcarhours>24){
                         carTextView.text="NEXT DAY $endOfDrunk"
                     }
@@ -448,4 +452,5 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         d+=(l.capacity*l.percent_number/1200).toInt()
         return d
     }
+
 }
