@@ -4,15 +4,18 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.room.Room
 import androidx.viewpager2.widget.ViewPager2
 import com.example.drinkdrive.R
@@ -84,14 +87,12 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         var images = resources.getStringArray(R.array.images)
         val firstName = database.alcoholDAO().getFirstName()
 
-        try {
-            if (firstName != names[0]) {
-                for (i in 0 until names.size) {
-                    val alcohol = Alcohol(i + 1, names[i], images[i], capacity[i], percent[i], null)
-                    database.alcoholDAO().insertAll(alcohol)
-                }
+        if (firstName != names[0]) {
+            for (i in 0 until names.size) {
+                val alcohol = Alcohol(i + 1, names[i], images[i], capacity[i], percent[i], null)
+                database.alcoholDAO().insertAll(alcohol)
             }
-        } catch (ignored : android.database.sqlite.SQLiteConstraintException) {}
+        }
 
         //sztuczne dane
         database.alcoholDrunkDAO().deleteAll(userId!!)
@@ -117,6 +118,10 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
         database.alcoholDrunkDAO().insert("WHISKY",40F,500F,"2021-06-09 16:12:32",userId!!)
         createNotificationChannel()
         promile()
+        if (resources.configuration.orientation
+            == Configuration.ORIENTATION_LANDSCAPE) {
+            findViewById<Button>(R.id.button3).isVisible = false
+        }
     }
 
     private fun login(){
@@ -409,10 +414,9 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                 val nowMinute = LocalTime.now().minute * 60
 
 
-                //createNotification((finalMinute + finalHour + final.second) -
-                //        (nowHour + nowMinute + LocalTime.now().second),
-                //        shared.getString("notifications", "false")!!)
-                createNotification(2, "true")
+                createNotification((finalMinute + finalHour + final.second) -
+                        (nowHour + nowMinute + LocalTime.now().second),
+                        shared.getString("notifications", "false")!!)
 
             } else {
                 currentcarimg.setImageResource(carsIMG[0])
