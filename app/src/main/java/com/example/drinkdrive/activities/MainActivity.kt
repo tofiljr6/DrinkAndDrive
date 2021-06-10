@@ -262,6 +262,9 @@ class MainActivity : AppCompatActivity(),ViewPagerClick {
                     }
                 }
             }
+            else {
+                title = "User: ${Firebase.auth.currentUser!!.displayName}"
+            }
         }
         if(requestCode==RC_SIGN_IN){
             if(data!=null){
